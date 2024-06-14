@@ -1,50 +1,49 @@
-import React, { useContext, ChangeEventHandler, useEffect, useRef } from "react";
+import React, { useContext, ChangeEventHandler, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SettingsContext } from "../utils";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
-import { Toggle } from "../components";
-import { Settings } from "../utils/contexts/settings";
+import { StyleWrapper, Toggle } from "../components";
 
 const SettingsPage = () => {
   const navigate = useNavigate();
   const settingsContext = useContext(SettingsContext);
 
-  const origSettings = useRef<Settings>();
-  useEffect(() => { origSettings.current = settingsContext; }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const [newNickname, setNewNickname] = useState(settingsContext?.nickname);
+  const [newDarkMode, setNewDarkMode] = useState(settingsContext?.darkMode);
 
   const handleSave = () => {
+    settingsContext?.setNickname(newNickname);
+    settingsContext?.setDarkMode(newDarkMode);
     navigate(-1);
   };
-  const handleCancel = () => {
-    settingsContext?.setNickname(origSettings.current?.nickname);
-    settingsContext?.setDarkMode(origSettings.current?.darkMode);
-    navigate(-1);
-  };
+  const handleCancel = () => navigate(-1);
 
   const changeNickname: ChangeEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
-    if (settingsContext) settingsContext.setNickname(e.target.value);
+    setNewNickname(e.target.value);
   };
   const changeDarkMode: ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (settingsContext) settingsContext.setDarkMode(e.target.checked);
+    setNewDarkMode(e.target.checked);
   };
 
   return (<>
-    <h1>Settings</h1>
-    <Form onSubmit={handleSave}>
-      <Form.Group controlId="nickname">
-        <Form.Label>Nickname</Form.Label>
-        <Form.Control type="text" value={settingsContext?.nickname} onChange={changeNickname} />
-      </Form.Group>
-      <Form.Group controlId="darkMode">
-        <Form.Label>Dark mode?</Form.Label>
-        <Toggle value={settingsContext?.darkMode} onChange={changeDarkMode} />
-      </Form.Group>
-    </Form>
-    <ButtonGroup>
-      <Button variant="secondary" onClick={handleCancel}>Back</Button>
-      <Button variant="secondary" onClick={handleSave}>Save</Button>
-    </ButtonGroup>
+    <StyleWrapper override={{darkMode: newDarkMode}}>
+      <h1>Settings</h1>
+      <Form onSubmit={handleSave}>
+        <Form.Group controlId="nickname">
+          <Form.Label>Nickname</Form.Label>
+          <Form.Control type="text" value={newNickname} onChange={changeNickname} />
+        </Form.Group>
+        <Form.Group controlId="darkMode">
+          <Form.Label>Dark mode?</Form.Label>
+          <Toggle value={newDarkMode} onChange={changeDarkMode} />
+        </Form.Group>
+      </Form>
+      <ButtonGroup>
+        <Button variant="secondary" onClick={handleCancel}>Back</Button>
+        <Button variant="secondary" onClick={handleSave}>Save</Button>
+      </ButtonGroup>
+    </StyleWrapper>
   </>);
 };
 

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { GameContext } from "../utils";
 import { Button, ButtonGroup } from "react-bootstrap";
 
-// page to display account information and initiate payment
 const GamePage = () => {
   const navigate = useNavigate();
   const gameContext = useContext(GameContext);
