@@ -13,7 +13,7 @@ const App = () => {
     <SettingsContext.Provider value={settingsValues}>
       <GameContext.Provider value={gameValues}>
         <StyleWrapper>
-          <BrowserRouter> 
+          <BrowserRouter basename={process.env.PUBLIC_URL} > 
             <Routes>
               <Route index path="/" element={<LandingPage />} />
               <Route path="/settings" element={<SettingsPage />} />
