@@ -1,0 +1,11 @@
+.app {
+  height: 100vh;
+  width: 100vw;
+
+  &.bg-light {
+    background: #FFFFFF;
+  }
+  &.bg-dark {
+    background: #000000;
+  }
+}
