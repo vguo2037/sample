@@ -1,11 +1,11 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { GameContext } from "../utils";
+// import { GameContext } from "../utils";
 import { Button, ButtonGroup } from "react-bootstrap";
 
 const GamePage = () => {
   const navigate = useNavigate();
-  const gameContext = useContext(GameContext);
+  // const gameContext = useContext(GameContext);
 
   return (<>
     <ButtonGroup>

@@ -27,6 +27,7 @@
 
   .toggleInput {
     opacity: 0;
+    cursor: pointer;
   };  
 
   &:has(.toggleInput:checked) {
