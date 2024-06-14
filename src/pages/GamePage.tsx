@@ -1,16 +1,18 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { SettingsContext } from "../utils";
-import { Button } from "react-bootstrap";
+import { GameContext } from "../utils";
+import { Button, ButtonGroup } from "react-bootstrap";
 
 // page to display account information and initiate payment
 const GamePage = () => {
   const navigate = useNavigate();
-  const settingsContext = useContext(SettingsContext);
+  const gameContext = useContext(GameContext);
 
   return (<>
-    <Button onClick={() => navigate(-1)}>Return</Button>
-    <Button onClick={() => navigate(-1)}>Save</Button>
+    <ButtonGroup>
+      <Button variant="secondary" onClick={() => navigate(-1)}>Back</Button>
+      <Button variant="secondary" onClick={() => navigate(-1)}>Save</Button>
+    </ButtonGroup>
   </>);
 };
 

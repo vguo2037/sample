@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.scss';
+import './styles/App.scss';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { SettingsContext, useSettingsValues, GameContext, useGameValues } from "./utils";
 import { GamePage, LandingPage, SettingsPage } from './pages';

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { SettingsContext } from "../utils";
-import { Button } from "react-bootstrap";
+import { Button, ButtonGroup } from "react-bootstrap";
 
 // page to display account information and initiate payment
 const LandingPage = () => {
@@ -9,8 +9,11 @@ const LandingPage = () => {
   const settingsContext = useContext(SettingsContext);
 
   return (<>
-    <Button onClick={() => navigate("settings")}>Settings</Button>
-    <Button onClick={() => navigate("game")}>Play</Button>
+    <p className="title">Welcome!</p>
+    <ButtonGroup>
+      <Button variant="secondary" onClick={() => navigate("/settings")}>Settings</Button>
+      <Button variant="secondary" onClick={() => navigate("/game")}>Play</Button>
+    </ButtonGroup>
   </>);
 };
 

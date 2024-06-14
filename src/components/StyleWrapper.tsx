@@ -1,7 +1,11 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { useContext } from 'react';
 import { SettingsContext } from '../utils';
 
-const StyleWrapper = ({ children }: { children: ReactNode }) => {
+interface StyleWrapperProps {
+  children: React.ReactNode
+};
+
+const StyleWrapper: React.FC<StyleWrapperProps> = ({ children }) => {
   const settingsContext = useContext(SettingsContext);
   const bgColor = settingsContext?.darkMode ? "bg-dark" : "bg-light";
 
