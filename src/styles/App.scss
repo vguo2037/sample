@@ -15,10 +15,26 @@
   };
 
   &.bg-light {
-    color: var(--dark);
+    p, label, h1, h2, h3, h4, h5, h6 {
+      color: var(--bs-dark);
+    }
+
+    &.override-padding {
+      p, label, h1, h2, h3, h4, h5, h6 {
+        color: var(--bs-dark) !important;
+      }
+    }
   }
   &.bg-dark {
-    color: var(--light);
+    p, label, h1, h2, h3, h4, h5, h6 {
+      color: var(--bs-light);
+    }
+
+    &.override-padding {
+      p, label, h1, h2, h3, h4, h5, h6 {
+        color: var(--bs-light) !important;
+      }
+    }
   }
 }
 
