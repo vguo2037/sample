@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameStatusContext, SettingsContext } from "../utils";
 import { Button, ButtonGroup } from "react-bootstrap";
-import { GamePanel } from "../components";
+import { GamePanel, TurnDisplayer } from "../components";
 import "../styles/gamePanel.scss";
 import type { GameMode } from "../utils/types";
-import { setupNewGame } from "../utils/gameControl";
+import { handleLose, handleWin, setupNewGame } from "../utils/gameControl";
 
 const GamePage = () => {
   const navigate = useNavigate();
@@ -13,11 +13,11 @@ const GamePage = () => {
   const {
     gameMode, setGameMode,
     score, resetScore,
-    currentPlayer, switchCurrentPlayer
+    undoMove
   } = gameStatusContext;
   const settingsContext = useContext(SettingsContext);
 
-  const GameModePicker = () => {
+  const ModePicker = () => {
     return (<div className="center-children">
       <p>{gameMode === "none" ? "Start a" : "Play another"} round with:</p>
       <ButtonGroup>
@@ -29,11 +29,6 @@ const GamePage = () => {
     </div>);
   };
 
-  const handleReset = () => {
-    if (window.confirm("Are you sure you want to reset your score? There is no undoing this action!")) {
-      resetScore();
-    };
-  };
   const handleStart = (mode: GameMode) => {
     setGameMode(mode);
     setupNewGame(gameStatusContext);
@@ -41,11 +36,21 @@ const GamePage = () => {
 
   return (<>
     <p className="flex-row">{settingsContext?.nickname}'s current score is: {score}
-      <span><Button onClick={handleReset}>Reset</Button></span>
+      <span><Button onClick={() => resetScore()}>Reset</Button></span>
     </p>
-    { gameMode !== "none" && gameMode !== "ended" && <p>It is Player {currentPlayer}'s turn!</p> }
-    { gameMode !== "none" && <GamePanel /> }
-    { (gameMode === "none" || gameMode === "ended") && <GameModePicker />}
+    <TurnDisplayer />
+    { gameMode !== "none" && <div className="center-children">
+      <GamePanel />
+      { gameMode !== "ended" && <>
+        <ButtonGroup>
+          <Button variant="success" onClick={() => handleWin(gameStatusContext)}>Win</Button>
+          <Button variant="primary" onClick={() => undoMove()}>Undo</Button>
+          <Button variant="primary" onClick={() => setGameMode("none")}>Restart</Button>
+          <Button variant="danger" onClick={() => handleLose(gameStatusContext)}>Lose</Button>
+        </ButtonGroup>
+      </> }
+    </div> }
+    { (gameMode === "none" || gameMode === "ended") && <ModePicker />}
     <ButtonGroup>
       <Button variant="secondary" onClick={() => navigate("/")}>Home</Button>
       <Button variant="secondary" onClick={() => navigate("/settings")}>Settings</Button>

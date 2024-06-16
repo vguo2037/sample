@@ -1,37 +1,35 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { GameStatusContext, SettingsContext } from '../utils';
-import { PlayerTurn } from '../utils/types';
 
 interface GameCellProps {
   row: number;
   col: number;
   id: string;
-  cellSelect: Function;
 }
 
-const GameCell: React.FC<GameCellProps> = ({ row, col, id, cellSelect }) => {
-  const gameStatusContext = useContext(GameStatusContext);
-  const [playerSelection, setPlayerSelection] = useState<PlayerTurn>();
+const GameCell: React.FC<GameCellProps> = ({ row, col, id }) => {
+  const {
+    currentPlayer, gameMode, handleCellSelect, board
+  } = useContext(GameStatusContext);
+  const cellValue = board[row][col];
 
   const { darkMode } = useContext(SettingsContext);
   const cellColor = darkMode ? "bg-dark" : "bg-light";
   const textColor = darkMode ? "text-light" : "text-dark";
 
   const handleSelect = () => {
-    if (!gameStatusContext?.currentPlayer) {
+    if (!currentPlayer) {
       alert("Error detecting current player.");
       return;
     }
-
-    setPlayerSelection(gameStatusContext.currentPlayer);
-    cellSelect(gameStatusContext.currentPlayer);
-  }
+    handleCellSelect({row, col, player: currentPlayer});
+  };
 
   return (<>
-    <button className={`game-cell center-children ${cellColor} ${textColor}`} id={id}
-      onClick={handleSelect} disabled={Boolean(playerSelection)}
+    <button className={`game-cell center-children ${cellColor} ${textColor}`} id={id} key={id}
+      onClick={handleSelect} disabled={Boolean(cellValue) || gameMode === "ended"}
     >
-      {playerSelection}
+      {cellValue}
     </button>
   </>);
 };
