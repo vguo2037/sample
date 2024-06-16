@@ -1,19 +1,18 @@
 import React, { useContext } from "react";
 import { GameStatusContext } from "../utils";
 import { Button, ButtonGroup } from "react-bootstrap";
+import { startGame } from "../utils/gameControl";
 
-interface ModePickerProps {
-  handleStart: Function
-}
-
-const ModePicker: React.FC<ModePickerProps> = ({ handleStart }) => {
-  const { gameMode } = useContext(GameStatusContext);
+const ModePicker = () => {
+  const gameStatusContext = useContext(GameStatusContext);
 
   return (<div className="center-children">
-    <p>{gameMode === "none" ? "Start a" : "Play another"} round with:</p>
+    <p>{gameStatusContext.gameMode === "none" ? "Start a" : "Play another"} round with:</p>
     <ButtonGroup>
-      <Button variant="primary" onClick={() => handleStart("NPC")}>An NPC</Button>
-      <Button variant="primary" onClick={() => handleStart("multiplayer")} data-title="Score goes to Player 1 (X)" >
+      <Button variant="primary" onClick={() => startGame("NPC", gameStatusContext)}>An NPC</Button>
+      <Button variant="primary" onClick={() => startGame("multiplayer", gameStatusContext)}
+        tooltip-text="Score goes to Player 1 (X)"
+      >
         Another player
       </Button>
     </ButtonGroup>

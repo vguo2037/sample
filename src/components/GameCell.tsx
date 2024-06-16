@@ -23,7 +23,7 @@ const GameCell: React.FC<GameCellProps> = ({ row, col, id, disabled }) => {
       alert("Error detecting current player.");
       return;
     }
-    handleCellSelect({row, col, player: currentPlayer});
+    handleCellSelect({row, col, mark: currentPlayer});
   };
 
   return (<>

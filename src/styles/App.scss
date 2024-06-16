@@ -73,8 +73,8 @@ form {
 
 
 
-[data-title]:after {
-  content: attr(data-title);
+[tooltip-text]:after {
+  content: attr(tooltip-text);
   position: absolute;
   padding: 0.25rem 0.5rem;
   left: 25%;
@@ -85,12 +85,12 @@ form {
   border: 1px solid var(--bs-light);
   width: max-content;
   opacity: 0;
-  -webkit-transition: opacity 0.25s ease-in-out;
-  transition: 0.5s;
+  -webkit-transition: opacity 0.25s ease-out;
+  transition: 0.25s ease-out;
   font-size: small;
   pointer-events: none;
-}
+};
 
-[data-title]:hover:after {
+[tooltip-text]:hover:after {
   opacity: 1;
-}
+};

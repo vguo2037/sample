@@ -17,7 +17,6 @@ const NicknameSetter: React.FC<NicknameSetterProps> = ({ newNickname, setNewNick
     setRequestingInProgress(true);
     if (randomNicknameStash.current.length === 0) {
       randomNicknameStash.current = await requestRandomNicknames();
-      console.log("randomNicknameStash.current", randomNicknameStash.current);
     };
     setNewNickname(randomNicknameStash.current.pop());
     setRequestingInProgress(false);
