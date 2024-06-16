@@ -1,12 +1,13 @@
-.slider {
+.toggle-slider {
   position: relative;
   cursor: pointer;
   width: 2.5rem;
   height: 1.25rem;
-  background-color: #ccc;
+  background-color: #97CDE2;
   -webkit-transition: .4s;
   transition: .4s;
   border-radius: 34px;
+  border: 1px solid var(--bs-dark);
 
   &:before {
     position: absolute;
@@ -19,22 +20,24 @@
     -moz-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
-    background-color: white;
+    background-color: #FFD05B;
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 50%;
   };
 
-  .toggleInput {
+  .toggle-input {
     opacity: 0;
     cursor: pointer;
   };  
 
-  &:has(.toggleInput:checked) {
-    background-color: var(--bs-success);
+  &:has(.toggle-input:checked) {
+    background-color: #18186D;
+    border: 1px solid var(--bs-light);
 
     &:before {
       left: calc(100% - 1.1rem);
+      background-color: #E3ECF4;
     };
   };
 };

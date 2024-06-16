@@ -17,28 +17,55 @@
   &.bg-light {
     p, label, h1, h2, h3, h4, h5, h6 {
       color: var(--bs-dark);
-    }
+    };
 
     &.override-padding {
       p, label, h1, h2, h3, h4, h5, h6 {
         color: var(--bs-dark) !important;
-      }
-    }
-  }
+      };
+    };
+  };
+
   &.bg-dark {
     p, label, h1, h2, h3, h4, h5, h6 {
       color: var(--bs-light);
-    }
+    };
 
     &.override-padding {
       p, label, h1, h2, h3, h4, h5, h6 {
         color: var(--bs-light) !important;
-      }
-    }
-  }
-}
+      };
+    };
+  };
+};
 
 .title {
   font-size: 7.5vw;
   font-weight: bold;
-}
+};
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+};
+
+.center-children {
+  align-items: center;
+  justify-content: center;
+};
+
+form {
+  input[type=text] {
+    width: 128px;
+  };
+  > div {
+    padding-bottom: 1rem;
+  };
+  .horizontal-group {
+    label.form-label {
+      margin: 0;
+    };
+    gap: 1rem;
+    align-items: center;
+  }
+};

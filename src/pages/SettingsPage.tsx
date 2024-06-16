@@ -2,7 +2,7 @@ import React, { useContext, ChangeEventHandler, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SettingsContext } from "../utils";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
-import { StyleWrapper, Toggle } from "../components";
+import { NicknameSetter, StyleWrapper, Toggle } from "../components";
 
 const SettingsPage = () => {
   const navigate = useNavigate();
@@ -32,16 +32,16 @@ const SettingsPage = () => {
       <Form onSubmit={handleSave}>
         <Form.Group controlId="nickname">
           <Form.Label>Nickname</Form.Label>
-          <Form.Control type="text" value={newNickname} onChange={changeNickname} />
+          <NicknameSetter newNickname={newNickname} setNewNickname={setNewNickname} changeNickname={changeNickname} />
         </Form.Group>
-        <Form.Group controlId="darkMode">
+        <Form.Group controlId="darkMode" className="flex-row horizontal-group">
           <Form.Label>Dark mode?</Form.Label>
           <Toggle value={newDarkMode} onChange={changeDarkMode} />
         </Form.Group>
       </Form>
       <ButtonGroup>
         <Button variant="secondary" onClick={handleCancel}>Back</Button>
-        <Button variant="secondary" onClick={handleSave}>Save</Button>
+        <Button variant="success" onClick={handleSave}>Save</Button>
       </ButtonGroup>
     </StyleWrapper>
   </>);

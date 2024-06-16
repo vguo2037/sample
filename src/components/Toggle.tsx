@@ -8,8 +8,8 @@ interface ToggleProps {
 };
 
 const Toggle: React.FC<ToggleProps> = ({ value, onChange }) => {
-  return (<label className="slider">
-    <Form.Control type="checkbox" className="toggleInput" checked={value} onChange={onChange} />
+  return (<label className="toggle-slider">
+    <Form.Control type="checkbox" className="toggle-input" checked={value} onChange={onChange} />
   </label>);
 };
 
