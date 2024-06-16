@@ -1,13 +1,13 @@
 import React from 'react';
 import './styles/App.scss';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
-import { SettingsContext, useSettingsValues, GameContext, useGameValues } from "./utils";
+import { SettingsContext, useSettingsValues, GameStatusContext, useGameStatusValues } from "./utils";
 import { GamePage, LandingPage, SettingsPage } from './pages';
 import { StyleWrapper } from './components';
 
 const App = () => {
   const settingsValues = useSettingsValues();
-  const gameValues = useGameValues();
+  const gameValues = useGameStatusValues();
 
   const router = createHashRouter(
     [
@@ -24,11 +24,11 @@ const App = () => {
 
   return (
     <SettingsContext.Provider value={settingsValues}>
-      <GameContext.Provider value={gameValues}>
+      <GameStatusContext.Provider value={gameValues}>
         <StyleWrapper>
           <RouterProvider router={router} />
         </StyleWrapper>
-      </GameContext.Provider>
+      </GameStatusContext.Provider>
     </SettingsContext.Provider>
   );
 }

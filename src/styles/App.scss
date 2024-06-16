@@ -12,36 +12,17 @@
 
   > * {
     margin-bottom: 1rem;
+    p {
+      margin-bottom: 0.5rem;
+    }
   }
 
   &:has(.override-padding) {
     padding: 0;
   };
 
-  &.bg-light {
-    p, label, h1, h2, h3, h4, h5, h6 {
-      color: var(--bs-dark);
-    };
-  };
-
-  &.bg-dark {
-    p, label, h1, h2, h3, h4, h5, h6 {
-      color: var(--bs-light);
-    };
-  };
-
   &.override-padding {
     margin-bottom: 0;
-    &.bg-light {
-      p, label, h1, h2, h3, h4, h5, h6 {
-        color: var(--bs-dark) !important;
-      };
-    };
-    &.bg-dark {
-      p, label, h1, h2, h3, h4, h5, h6 {
-        color: var(--bs-light) !important;
-      };
-    };
   };
 };
 
@@ -50,22 +31,36 @@
   font-weight: bold;
 };
 
-.flex-row {
-  display: flex;
-  flex-direction: row;
-};
-
 .center-children {
+  display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 };
+
+.flex-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-direction: row; // applied after `flex-direction: column` in `.center-children`
+};
+
+:has(.icon-btn) {
+  gap: 0.5rem;
+
+  .icon-btn {
+    padding: 0;
+    height: 36px;
+    min-width: 32px;
+  }
+}
 
 form {
   input[type=text] {
     width: 128px;
   };
   > div {
-    padding-bottom: 1rem;
+    margin-bottom: 1rem;
   };
   .horizontal-group {
     label.form-label {
@@ -82,15 +77,15 @@ form {
   content: attr(data-title);
   position: absolute;
   padding: 0.25rem 0.5rem;
-  left: 50%;
-  top: 100%;
+  left: 25%;
+  top: 75%;
   z-index: 1;
   background-color: var(--bs-dark);
   border-radius: var(--bs-border-radius);
   border: 1px solid var(--bs-light);
   width: max-content;
   opacity: 0;
-  -webkit-transition: opacity 0.5s ease-in-out;
+  -webkit-transition: opacity 0.25s ease-in-out;
   transition: 0.5s;
   font-size: small;
   pointer-events: none;

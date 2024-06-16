@@ -1,32 +1,41 @@
 import React, { useContext } from 'react';
 import GameCell from './GameCell';
-import type { GameMode } from '../utils/types';
+import type { CellMove, PlayerTurn } from '../utils/types';
 import { Button, ButtonGroup } from 'react-bootstrap';
-import { GameContext } from '../utils';
+import { GameStatusContext, SettingsContext } from '../utils';
 
-interface GamePanelProps {
-  gameMode: GameMode;
-  setGameMode: Function;
-}
-
-const GamePanel: React.FC<GamePanelProps> = ({ gameMode, setGameMode }) => {
-  const gameContext = useContext(GameContext);
+const GamePanel = () => {
+  const {
+    gameMode, setGameMode,
+    addScore,
+    switchCurrentPlayer,
+  } = useContext(GameStatusContext);
+  const settingsContext = useContext(SettingsContext);
+  const backLineColor = settingsContext?.darkMode ? "bg-light" : "bg-dark";
 
   const handleRestart = () => {
     setGameMode("none");
   };
   const handleWin = () => {
-    if (gameContext) gameContext.addScore();
+    addScore();
     setGameMode("ended");
   };
   const handleLose = () => {
     setGameMode("ended");
   };
+  const handleCellSelect = (move: CellMove) => {
+    switchCurrentPlayer();
+  }
 
-  return (<div>
-    <div className='game-grid'>
+  return (<div className="center-children">
+    <div className={`game-grid ${backLineColor}`}>
       {[0, 1, 2].map(row => {
-        return [0, 1, 2].map(col => <GameCell row={row} col={col} id={`cell-${row}-${col}`} />);
+        return [0, 1, 2].map(col => (
+          <GameCell
+            row={row} col={col} id={`cell-${row}-${col}`}
+            cellSelect={(player: Exclude<PlayerTurn, undefined>) => handleCellSelect({row, col, player})}
+          />
+        ));
       })}
     </div>
     { gameMode !== "ended" && <>

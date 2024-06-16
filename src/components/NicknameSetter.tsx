@@ -25,7 +25,7 @@ const NicknameSetter: React.FC<NicknameSetterProps> = ({ newNickname, setNewNick
 
   return (<div className="flex-row">
     <Form.Control type="text" value={newNickname} onChange={changeNickname} />
-    <Button variant="link" size="lg" className="flex-row center-children" style={{ minWidth: 64, height: 36 }}
+    <Button variant="link" size="lg" className="flex-row center-children icon-btn"
       onClick={fetchRandomNickname} disabled={requestingInProgress}
     >
       { requestingInProgress

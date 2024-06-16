@@ -14,7 +14,7 @@
     content: "";
     height: 1rem;
     width: 1rem;
-    left: 0.1rem;
+    left: calc(0.1rem - 0.5px);
     top: 50%;
     -webkit-transform: translateY(-50%);
     -moz-transform: translateY(-50%);
@@ -36,8 +36,8 @@
     border: 1px solid var(--bs-light);
 
     &:before {
-      left: calc(100% - 1.1rem);
-      background-color: #E3ECF4;
+      left: calc(100% - 1.1rem + 0.5px);
+      background-color: #E4EFF9;
     };
   };
 };
