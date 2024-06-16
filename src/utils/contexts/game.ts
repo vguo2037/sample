@@ -1,12 +1,7 @@
 import { createContext, useState } from "react";
+import type { GameStatistics } from "../types";
 
-type GameStats = {
-  score: number,
-  addScore: Function,
-  resetScore: Function
-};
-
-export const GameContext = createContext<GameStats | null>(null);
+export const GameContext = createContext<GameStatistics | null>(null);
 export const useGameValues = () => {
   const [score, setScore] = useState<number>(0);
 

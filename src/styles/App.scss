@@ -10,6 +10,10 @@
   justify-content: center;
   padding: min(5vw, 720px);
 
+  > * {
+    margin-bottom: 1rem;
+  }
+
   &:has(.override-padding) {
     padding: 0;
   };
@@ -18,20 +22,22 @@
     p, label, h1, h2, h3, h4, h5, h6 {
       color: var(--bs-dark);
     };
-
-    &.override-padding {
-      p, label, h1, h2, h3, h4, h5, h6 {
-        color: var(--bs-dark) !important;
-      };
-    };
   };
 
   &.bg-dark {
     p, label, h1, h2, h3, h4, h5, h6 {
       color: var(--bs-light);
     };
+  };
 
-    &.override-padding {
+  &.override-padding {
+    margin-bottom: 0;
+    &.bg-light {
+      p, label, h1, h2, h3, h4, h5, h6 {
+        color: var(--bs-dark) !important;
+      };
+    };
+    &.bg-dark {
       p, label, h1, h2, h3, h4, h5, h6 {
         color: var(--bs-light) !important;
       };
@@ -69,3 +75,27 @@ form {
     align-items: center;
   }
 };
+
+
+
+[data-title]:after {
+  content: attr(data-title);
+  position: absolute;
+  padding: 0.25rem 0.5rem;
+  left: 50%;
+  top: 100%;
+  z-index: 1;
+  background-color: var(--bs-dark);
+  border-radius: var(--bs-border-radius);
+  border: 1px solid var(--bs-light);
+  width: max-content;
+  opacity: 0;
+  -webkit-transition: opacity 0.5s ease-in-out;
+  transition: 0.5s;
+  font-size: small;
+  pointer-events: none;
+}
+
+[data-title]:hover:after {
+  opacity: 1;
+}

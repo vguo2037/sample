@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useEffect, useRef, useState } from "react";
+import React, { ChangeEventHandler, useRef, useState } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { IoDiceSharp } from "react-icons/io5";
 import { requestRandomNicknames } from "../utils";

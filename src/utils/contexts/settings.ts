@@ -1,11 +1,5 @@
 import { createContext, useState } from "react";
-
-export type Settings = {
-  darkMode: boolean,
-  setDarkMode: Function,
-  nickname: string,
-  setNickname: Function
-};
+import type { Settings } from "../types";
 
 export const SettingsContext = createContext<Settings | undefined>(undefined);
 export const useSettingsValues = () => {
