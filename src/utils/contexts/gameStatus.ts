@@ -29,8 +29,7 @@ export const useGameStatusValues = () => {
   };
 
   const switchCurrentPlayer = () => {
-    if (currentPlayer !== "X") setCurrentPlayer("X");
-    else setCurrentPlayer("O");
+    setCurrentPlayer(p => p === "X" ? "O" : "X");
   };
 
   const setBoardCell = (

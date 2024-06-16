@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import GameCell from './GameCell';
-import { SettingsContext } from '../utils';
 
-const GamePanel = () => {
-  const settingsContext = useContext(SettingsContext);
-  const backLineColor = settingsContext?.darkMode ? "bg-light" : "bg-dark";
+interface GamePanelProps {
+  isNPCTurn: boolean
+};
 
+const GamePanel: React.FC<GamePanelProps> = ({ isNPCTurn }) => {
   return (<>
-    <div className={`game-grid ${backLineColor}`}>
+    <div className={"game-grid"}>
       {[0, 1, 2].map(row => {
         return [0, 1, 2].map(col => (
-          <GameCell
+          <GameCell disabled={isNPCTurn} key={`cell-${row}-${col}`}
             row={row} col={col} id={`cell-${row}-${col}`}
           />
         ));
