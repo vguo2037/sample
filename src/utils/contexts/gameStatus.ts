@@ -51,6 +51,7 @@ export const useGameStatusValues = () => {
   const resetHistory = () => {
     setBoard(emptyGameStatus.board);
     pastMoves.current = [];
+    setLastActionIsUndo(false);
   };
 
   useEffect(() => {
@@ -77,6 +78,10 @@ export const useGameStatusValues = () => {
     const lastMove: CellMove = pastMoves.current.pop() as CellMove;
     setBoardCell({ row: lastMove.row, col: lastMove.col, mark: null });
 
+    if (gameMode !== "NPC") {
+      switchCurrentPlayer();
+      return;
+    }
     if (gameMode === "NPC" && pastMoves.current.length !== 0) {
       const lastPlayerMove = pastMoves.current.pop() as CellMove;
       setBoardCell({ row: lastPlayerMove.row, col: lastPlayerMove.col, mark: null });
