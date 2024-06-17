@@ -71,16 +71,25 @@ form {
   }
 };
 
-
+.dropdown-menu {
+  --bs-dropdown-min-width: 96px;
+};
 
 [tooltip-text]:after {
   content: attr(tooltip-text);
   position: absolute;
   padding: 0.25rem 0.5rem;
-  left: 25%;
-  top: 75%;
+  // left: 25%;
+  // top: 75%;
+  top: -75%;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
   z-index: 1;
-  background-color: var(--bs-dark);
+  background-color: var(--bs-gray-600);
+  color: var(--bs-light);
   border-radius: var(--bs-border-radius);
   border: 1px solid var(--bs-light);
   width: max-content;

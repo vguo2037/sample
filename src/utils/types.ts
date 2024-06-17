@@ -9,6 +9,7 @@ export type GameMode = "NPC" | "multiplayer" | "ended" | "none";
 export type PlayerMark = "X" | "O";
 export type GameOutcome = "win" | "lose" | "draw" | "none";
 export type Board = Array<Array<PlayerMark | null>>;
+export type NPCDifficulty = 0 | 1 | 2;
 
 export type GameStatus = {
   score: number,
@@ -25,6 +26,8 @@ export type GameStatus = {
   resetHistory: () => void,
   pastMoves: Array<CellMove>,
   undoMove: () => void
+  npcDifficulty: NPCDifficulty,
+  setNpcDifficulty: React.Dispatch<React.SetStateAction<NPCDifficulty>>
 };
 
 export type CellMove = {
@@ -44,3 +47,8 @@ export type GameOutcomeChecker = (
   board: Board,
   { row, col, mark }: CellMove
 ) => GameOutcome;
+
+export type NPCStrategyInput = {
+  board: Board,
+  // TODO put in npc mark?
+};

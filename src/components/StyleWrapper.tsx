@@ -13,7 +13,12 @@ const StyleWrapper: React.FC<StyleWrapperProps> = ({ children, override }) => {
   const textColor = darkModeUsed ? "text-light" : "text-dark";
   const overridePadding = override ? "override-padding" : "";
 
-  return <div className={`app ${bgColor} ${textColor} ${overridePadding}`}>{children}</div>;
+  return <div
+    data-bs-theme={darkModeUsed ? "dark" : "light"}
+    className={`app ${bgColor} ${textColor} ${overridePadding}`}
+  >
+    {children}
+  </div>;
 };
 
 export default StyleWrapper;

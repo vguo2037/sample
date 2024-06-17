@@ -19,12 +19,7 @@
   border: none;
 
   &:not(:disabled):hover {
-    &.bg-dark {
-      background-color: rgba(var(--bs-light-rgb), calc(var(--bs-bg-opacity) / 4)) !important;
-    };
-    &.bg-light {
-      background-color: rgba(var(--bs-dark-rgb), calc(var(--bs-bg-opacity) / 8)) !important;
-    };
+    background: var(--bs-secondary-bg) !important;
   };
 
   &:disabled {

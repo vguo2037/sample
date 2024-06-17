@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { GameStatusContext, SettingsContext } from "../utils";
 
 interface TurnDisplayerProps {
-  isNPCTurn: boolean
+  isNpcTurn: boolean
 };
 
-const TurnDisplayer: React.FC<TurnDisplayerProps> = ({ isNPCTurn }) => {
+const TurnDisplayer: React.FC<TurnDisplayerProps> = ({ isNpcTurn }) => {
   const { gameMode, gameOutcome, currentPlayer } = useContext(GameStatusContext);
   const { nickname } = useContext(SettingsContext);
 
@@ -22,7 +22,7 @@ const TurnDisplayer: React.FC<TurnDisplayerProps> = ({ isNPCTurn }) => {
   };
 
   if (gameMode !== "none") {
-    if (isNPCTurn) return <p>NPC is thinking…</p>;
+    if (isNpcTurn) return <p>NPC is thinking…</p>;
     else return <p>It is Player {currentPlayer}'s turn!</p>;
   };
 

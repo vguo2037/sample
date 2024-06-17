@@ -1,5 +1,5 @@
 import { createContext, useEffect, useRef, useState } from "react";
-import type { GameMode, GameOutcome, PlayerMark, GameStatus, Board, CellMove } from "../types";
+import type { GameMode, GameOutcome, PlayerMark, GameStatus, Board, CellMove, NPCDifficulty } from "../types";
 import { checkMoveOutcome, noop } from "../gameControl";
 
 const emptyGameStatus: GameStatus = { 
@@ -8,7 +8,8 @@ const emptyGameStatus: GameStatus = {
   gameMode: "none", setGameMode: noop,
   gameOutcome: "none", setGameOutcome: noop,
   board: Array(3).fill(Array(3).fill(null)), handleCellSelect: noop, resetHistory: noop,
-  pastMoves: [], undoMove: noop
+  pastMoves: [], undoMove: noop,
+  npcDifficulty: 0, setNpcDifficulty: noop
 };
 
 export const GameStatusContext = createContext<GameStatus>(emptyGameStatus);
@@ -20,6 +21,8 @@ export const useGameStatusValues = () => {
   const [gameOutcome, setGameOutcome] = useState<GameOutcome>(emptyGameStatus.gameOutcome);
   const [board, setBoard] = useState<Board>(emptyGameStatus.board);
   const pastMoves = useRef<Array<CellMove>>(emptyGameStatus.pastMoves);
+  const [npcDifficulty, setNpcDifficulty] = useState<NPCDifficulty>(emptyGameStatus.npcDifficulty);
+  const [lastActionIsUndo, setLastActionIsUndo] = useState<boolean>(false);
 
   const addScore = () => setScore(s => s + 1);
   const resetScore = () => {
@@ -52,6 +55,10 @@ export const useGameStatusValues = () => {
 
   useEffect(() => {
     if (!pastMoves.current.length) return;
+    if (lastActionIsUndo) {
+      setLastActionIsUndo(false);
+      return;
+    };
 
     const currentOutcome = checkMoveOutcome(board, pastMoves.current[pastMoves.current.length-1]);
     if (currentOutcome !== "none") {
@@ -60,11 +67,13 @@ export const useGameStatusValues = () => {
       if (currentOutcome === "win") addScore();
     } else {
       switchCurrentPlayer();
-    }
-  }, [board]);
+    };
+  }, [board]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const undoMove = () => {
     if (pastMoves.current.length === 0) return;
+
+    setLastActionIsUndo(true);
 
     const lastMove: CellMove = pastMoves.current.pop() as CellMove;
     setBoardCell({ row: lastMove.row, col: lastMove.col, mark: null });
@@ -81,6 +90,7 @@ export const useGameStatusValues = () => {
     gameMode, setGameMode,
     gameOutcome, setGameOutcome,
     board, handleCellSelect, resetHistory,
-    pastMoves: pastMoves.current, undoMove
+    pastMoves: pastMoves.current, undoMove,
+    npcDifficulty, setNpcDifficulty
   };
 };

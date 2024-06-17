@@ -1,15 +1,39 @@
 import React, { useContext } from "react";
 import { GameStatusContext } from "../utils";
-import { Button, ButtonGroup } from "react-bootstrap";
+import { Button, ButtonGroup, Dropdown, DropdownButton } from "react-bootstrap";
 import { startGame } from "../utils/gameControl";
+import { NPCDifficulty } from "../utils/types";
 
 const ModePicker = () => {
   const gameStatusContext = useContext(GameStatusContext);
 
+  const handleNPCSelect = (difficulty: NPCDifficulty) => {
+    startGame("NPC", gameStatusContext, difficulty);
+  };
+
   return (<div className="center-children">
     <p>{gameStatusContext.gameMode === "none" ? "Start a" : "Play another"} round with:</p>
     <ButtonGroup>
-      <Button variant="primary" onClick={() => startGame("NPC", gameStatusContext)}>An NPC</Button>
+      <DropdownButton
+        as={ButtonGroup}
+        variant="primary"
+        drop="down-centered"
+        title="An NPC"
+        tooltip-text="Select difficulty"
+      >
+        <Dropdown.Item
+          as="button" eventKey="difficulty-1"
+          onClick={() => handleNPCSelect(1)}
+        >
+          Easy
+        </Dropdown.Item>
+        <Dropdown.Item
+          as="button" eventKey="difficulty-2"
+          onClick={() => handleNPCSelect(2)}
+        >
+          Hard
+        </Dropdown.Item>
+      </DropdownButton>
       <Button variant="primary" onClick={() => startGame("multiplayer", gameStatusContext)}
         tooltip-text="Score goes to Player 1 (X)"
       >

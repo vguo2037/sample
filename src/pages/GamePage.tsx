@@ -4,7 +4,7 @@ import { GameStatusContext, SettingsContext } from "../utils";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { GamePanel, ModePicker, TurnDisplayer } from "../components";
 import "../styles/gamePanel.scss";
-import { makeNPCmove } from "../utils/gameControl";
+import { makeNpcMove } from "../utils/gameControl";
 
 const GamePage = () => {
   const navigate = useNavigate();
@@ -12,36 +12,40 @@ const GamePage = () => {
   const {
     gameMode, setGameMode,
     score, resetScore,
-    undoMove, currentPlayer
+    pastMoves, undoMove,
+    currentPlayer
   } = gameStatusContext;
   const settingsContext = useContext(SettingsContext);
-  const [isNPCTurn, setIsNPCTurn] = useState<boolean>(false);
+  const [isNpcTurn, setIsNpcTurn] = useState<boolean>(false);
 
   useEffect(() => {
-    const makeNPCTurn = async () => {
-      setIsNPCTurn(true);
+    const makeNpcTurn = async () => {
+      setIsNpcTurn(true);
 
       const delayTime = Math.random() * 1000 + 500;
       await new Promise(res => setTimeout(res, delayTime)); // delay for realism
 
-      makeNPCmove(gameStatusContext);
-      setIsNPCTurn(false);
+      makeNpcMove(gameStatusContext);
+      setIsNpcTurn(false);
     };
 
-    if (gameMode === "NPC" && currentPlayer === "O") makeNPCTurn();
+    if (gameMode === "NPC" && currentPlayer === "O") makeNpcTurn();
   }, [currentPlayer]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (<>
     <p className="flex-row">{settingsContext?.nickname}'s current score is: {score}
       <span><Button variant="secondary" onClick={() => resetScore()}>Reset</Button></span>
     </p>
-    <TurnDisplayer isNPCTurn={isNPCTurn} />
+    <TurnDisplayer isNpcTurn={isNpcTurn} />
     { gameMode !== "none" && <div className="center-children">
-      <GamePanel disabled={isNPCTurn || gameMode === "ended"} />
+      <GamePanel disabled={isNpcTurn || gameMode === "ended"} />
       { gameMode !== "ended" && <>
         <ButtonGroup>
-          <Button variant="primary" disabled={isNPCTurn} onClick={() => undoMove()}>Undo</Button>
-          <Button variant="primary" disabled={isNPCTurn} onClick={() => setGameMode("none")}>Restart</Button>
+          <Button variant="primary" disabled={isNpcTurn || pastMoves.length===0} onClick={() => undoMove()}
+          >
+            Undo
+          </Button>
+          <Button variant="primary" disabled={isNpcTurn} onClick={() => setGameMode("none")}>Restart</Button>
         </ButtonGroup>
       </> }
     </div> }
