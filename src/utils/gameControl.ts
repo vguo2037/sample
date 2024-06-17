@@ -1,6 +1,14 @@
-import { Board, CellMove, GameMode, GameOutcomeChecker, GameStatus, NPCDifficulty, NPCStrategyInput, OutcomeStartingCell, PlayerMark } from "./types";
+import { Board, CellMove, CellWinnableCheckInputs, GameMode, GameOutcome, GameOutcomeChecker, GameStatus, NPCDifficulty, NPCStrategyInput, OutcomeStartingCell, PlayerMark } from "./types";
 
 export const noop = () => {};
+
+export const reverseMark = (mark: PlayerMark) => mark === "X" ? "O" : "X";
+
+export const winningOutcome = (playAs: PlayerMark, outcome: GameOutcome) => {
+  if (playAs === "X" && outcome === "xWin") return true;
+  if (playAs === "O" && outcome === "oWin") return true;
+  return false;
+};
 
 export const startGame = (
   mode: GameMode,
@@ -28,29 +36,30 @@ const npcStrategyRandom = ({ board }: NPCStrategyInput) => {
   return emptyCells[chosenIndex];
 };
 
-const checkWinnable = (board: Board, row: number, col: number) => {
+const checkCellWinnable = ({ board, row, col, playAs }: CellWinnableCheckInputs) => {
   if (board[row][col]) return null; // cell already filled
   const boardCopy = JSON.parse(JSON.stringify(board));
+  const opponentPlayAs = reverseMark(playAs);
 
-  boardCopy[row][col] = "O";
-  const simulatedSelfMove = checkMoveOutcome(boardCopy, { row, col, mark: "O" });
-  if (simulatedSelfMove === "lose") return "O"; // losing for player means winning for NPC
+  boardCopy[row][col] = playAs;
+  const simulatedSelfMove = checkMoveOutcome(boardCopy, { row, col, mark: playAs });
+  if (winningOutcome(playAs, simulatedSelfMove)) return playAs;
 
-  boardCopy[row][col] = "X";
-  const simulatedOpponentMove = checkMoveOutcome(boardCopy, { row, col, mark: "X" });
-  if (simulatedOpponentMove === "win") return "X";
+  boardCopy[row][col] = opponentPlayAs;
+  const simulatedOpponentMove = checkMoveOutcome(boardCopy, { row, col, mark: opponentPlayAs });
+  if (winningOutcome(opponentPlayAs, simulatedOpponentMove)) return opponentPlayAs;
 
   return null;
 };
 
-const npcStrategyTactical = ({ board }: NPCStrategyInput) => {
+const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
   let winnableOpponent = null;
 
   // check winnable cells
-  for (let i=0; i<board.length; i++) for (let j=0; j<board[0].length; j++) {
-    const winnable: PlayerMark | null = checkWinnable(board, i, j);
-    if (winnable === "O") return [i, j]; // win game
-    if (winnable === "X") winnableOpponent = [i, j];
+  for (let row=0; row<board.length; row++) for (let col=0; col<board[0].length; col++) {
+    const winnable: PlayerMark | null = checkCellWinnable({ board, row, col, playAs: npcPlayAs });
+    if (winnable === npcPlayAs) return [row, col]; // win game
+    if (winnable === reverseMark(npcPlayAs)) winnableOpponent = [row, col];
   };
 
   // if opponent about to win, stop them
@@ -60,23 +69,25 @@ const npcStrategyTactical = ({ board }: NPCStrategyInput) => {
   if (!board[1][1]) return [1, 1];
 
   // pick any cell
-  return npcStrategyRandom({ board });
+  return npcStrategyRandom({ board, npcPlayAs });
 };
 
-export const makeNpcMove = ({ board, npcDifficulty, handleCellSelect }: GameStatus) => {
+export const makeNpcMove = (
+  { board, npcDifficulty, handleCellSelect }: GameStatus,
+  npcPlayAs: PlayerMark
+) => {
   let chosenCell: number[] = [];
   switch (npcDifficulty) {
     case 1:
-      chosenCell = npcStrategyRandom({ board });
+      chosenCell = npcStrategyRandom({ board, npcPlayAs });
       break;
     case 2:
-      chosenCell = npcStrategyTactical({ board });
+      chosenCell = npcStrategyTactical({ board, npcPlayAs });
       break;
     default:
       return;
   };
-  console.log("chosenCell", chosenCell)
-  handleCellSelect({ row: chosenCell[0], col: chosenCell[1], mark: "O" });
+  handleCellSelect({ row: chosenCell[0], col: chosenCell[1], mark: npcPlayAs });
 };
 
 const checkDiagWin = ({ board, currentRow, currentCol, currentPlayer }: OutcomeStartingCell) => {
@@ -96,7 +107,6 @@ const checkRowWin = ({ board, currentPlayer, currentRow }: OutcomeStartingCell) 
   for (let col=0; col<board[0].length; col++) {
     if (board[currentRow][col] !== currentPlayer) return false;
   };
-  
   return true;
 };
 
@@ -104,7 +114,6 @@ const checkColWin = ({ board, currentPlayer, currentCol }: OutcomeStartingCell) 
   for (let row=0; row<board.length; row++) {
     if (board[row][currentCol] !== currentPlayer) return false;
   };
-  
   return true;
 };
 
@@ -118,7 +127,7 @@ export const checkMoveOutcome: GameOutcomeChecker = (
     checkDiagWin(currentOutcomeStartingCell) ||
     checkRowWin(currentOutcomeStartingCell) ||
     checkColWin(currentOutcomeStartingCell)
-  ) return currentPlayer === "X" ? "win" : "lose";
+  ) return currentPlayer === "X" ? "xWin" : "oWin";
 
   for (let i=0; i<board.length; i++) for (let j=0; j<board[0].length; j++) {
     if (!board[i][j]) return "none"; // game has not yet ended

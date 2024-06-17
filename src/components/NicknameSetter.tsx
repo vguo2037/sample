@@ -4,8 +4,8 @@ import { IoDiceSharp } from "react-icons/io5";
 import { requestRandomNicknames } from "../utils";
 
 interface NicknameSetterProps {
-  newNickname?: string,
-  setNewNickname: Function,
+  newNickname: string,
+  setNewNickname: React.Dispatch<React.SetStateAction<string>>,
   changeNickname: ChangeEventHandler<HTMLInputElement>
 };
 
@@ -18,7 +18,8 @@ const NicknameSetter: React.FC<NicknameSetterProps> = ({ newNickname, setNewNick
     if (randomNicknameStash.current.length === 0) {
       randomNicknameStash.current = await requestRandomNicknames();
     };
-    setNewNickname(randomNicknameStash.current.pop());
+
+    setNewNickname(randomNicknameStash.current.pop() as string);
     setRequestingInProgress(false);
   };
 

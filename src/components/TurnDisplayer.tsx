@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { GameStatusContext, SettingsContext } from "../utils";
+import { winningOutcome } from "../utils/gameControl";
 
 interface TurnDisplayerProps {
   isNpcTurn: boolean
@@ -7,13 +8,14 @@ interface TurnDisplayerProps {
 
 const TurnDisplayer: React.FC<TurnDisplayerProps> = ({ isNpcTurn }) => {
   const { gameMode, gameOutcome, currentPlayer } = useContext(GameStatusContext);
-  const { nickname } = useContext(SettingsContext);
+  const { nickname, playerPlayAs } = useContext(SettingsContext);
 
   if (gameMode === "ended") {
     switch (gameOutcome) {
-      case "win":
-      case "lose":
-        return <p>{nickname} {gameOutcome}s!</p>;
+      case "xWin":
+      case "oWin":
+        const playerWins = winningOutcome(playerPlayAs, gameOutcome);
+        return <p>{nickname} {playerWins ? "win" : "lose"}s!</p>;
       case "draw":
         return <p>It's a draw!</p>;
       default:
@@ -22,7 +24,8 @@ const TurnDisplayer: React.FC<TurnDisplayerProps> = ({ isNpcTurn }) => {
   };
 
   if (gameMode !== "none") {
-    if (isNpcTurn) return <p>NPC is thinking…</p>;
+    if (isNpcTurn) return <p>NPC ({currentPlayer}) is thinking…</p>;
+    else if (gameMode === "NPC") return <p>It's your ({currentPlayer}) turn!</p>
     else return <p>It is Player {currentPlayer}'s turn!</p>;
   };
 

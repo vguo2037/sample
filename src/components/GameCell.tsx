@@ -1,5 +1,8 @@
 import React, { useContext } from 'react';
 import { GameStatusContext, SettingsContext } from '../utils';
+import { PlayerMark } from '../utils/types';
+import { ImCross } from "react-icons/im";
+import { RiRadioButtonFill } from "react-icons/ri";
 
 interface GameCellProps {
   row: number;
@@ -12,7 +15,7 @@ const GameCell: React.FC<GameCellProps> = ({ row, col, id, disabled }) => {
   const {
     currentPlayer, gameMode, handleCellSelect, board
   } = useContext(GameStatusContext);
-  const cellValue = board[row][col];
+  const cellMark = board[row][col];
 
   const { darkMode } = useContext(SettingsContext);
   const bgColor = darkMode ? "bg-dark" : "bg-light";
@@ -26,11 +29,22 @@ const GameCell: React.FC<GameCellProps> = ({ row, col, id, disabled }) => {
     handleCellSelect({row, col, mark: currentPlayer});
   };
 
+  const displayCellMark = (mark: PlayerMark | null) => {
+    switch (mark) {
+      case "X":
+        return <ImCross size={24} />;
+      case "O":
+        return <RiRadioButtonFill size={24} />;
+      default:
+        return null;
+    };
+  };
+
   return (<>
     <button className={`game-cell center-children ${bgColor} ${textColor}`} id={id}
-      onClick={handleSelect} disabled={disabled || Boolean(cellValue) || gameMode === "ended"}
+      onClick={handleSelect} disabled={disabled || Boolean(cellMark) || gameMode === "ended"}
     >
-      {cellValue}
+      {displayCellMark(cellMark)}
     </button>
   </>);
 };

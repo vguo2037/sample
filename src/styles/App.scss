@@ -8,7 +8,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: min(5vw, 720px);
+  padding: min(5vw, 720px) min(10vw, 720px);
 
   > * {
     margin-bottom: 1rem;

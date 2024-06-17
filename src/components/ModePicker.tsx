@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
-import { GameStatusContext } from "../utils";
+import { GameStatusContext, SettingsContext } from "../utils";
 import { Button, ButtonGroup, Dropdown, DropdownButton } from "react-bootstrap";
 import { startGame } from "../utils/gameControl";
 import { NPCDifficulty } from "../utils/types";
 
 const ModePicker = () => {
   const gameStatusContext = useContext(GameStatusContext);
+  const { nickname, playerPlayAs } = useContext(SettingsContext);
 
   const handleNPCSelect = (difficulty: NPCDifficulty) => {
     startGame("NPC", gameStatusContext, difficulty);
@@ -35,7 +36,7 @@ const ModePicker = () => {
         </Dropdown.Item>
       </DropdownButton>
       <Button variant="primary" onClick={() => startGame("multiplayer", gameStatusContext)}
-        tooltip-text="Score goes to Player 1 (X)"
+        tooltip-text={`Score is tracked for ${nickname} (${playerPlayAs})`}
       >
         Another player
       </Button>

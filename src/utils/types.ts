@@ -2,12 +2,14 @@ export type Settings = {
   darkMode: boolean,
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>,
   nickname: string,
-  setNickname: React.Dispatch<React.SetStateAction<string>>
+  setNickname: React.Dispatch<React.SetStateAction<string>>,
+  playerPlayAs: PlayerMark,
+  setPlayerPlayAs: React.Dispatch<React.SetStateAction<PlayerMark>>
 };
 
 export type GameMode = "NPC" | "multiplayer" | "ended" | "none";
 export type PlayerMark = "X" | "O";
-export type GameOutcome = "win" | "lose" | "draw" | "none";
+export type GameOutcome = "xWin" | "oWin" | "draw" | "none";
 export type Board = Array<Array<PlayerMark | null>>;
 export type NPCDifficulty = 0 | 1 | 2;
 
@@ -50,5 +52,12 @@ export type GameOutcomeChecker = (
 
 export type NPCStrategyInput = {
   board: Board,
-  // TODO put in npc mark?
+  npcPlayAs: PlayerMark
+};
+
+export type CellWinnableCheckInputs = {
+  board: Board,
+  row: number,
+  col: number,
+  playAs: PlayerMark
 };

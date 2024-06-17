@@ -1,14 +1,18 @@
 import { createContext, useState } from "react";
-import type { Settings } from "../types";
+import { PlayerMark, type Settings } from "../types";
 import { noop } from "../gameControl";
 
-export const SettingsContext = createContext<Settings>({
+const emptySettings: Settings = {
   darkMode: false, setDarkMode: noop,
-  nickname: "Player", setNickname: noop
-});
-export const useSettingsValues = () => {
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-  const [nickname, setNickname] = useState<string>("Player");
+  nickname: "Player", setNickname: noop,
+  playerPlayAs: "X", setPlayerPlayAs: noop
+};
 
-  return { darkMode, setDarkMode, nickname, setNickname };
+export const SettingsContext = createContext<Settings>(emptySettings);
+export const useSettingsValues = () => {
+  const [darkMode, setDarkMode] = useState<boolean>(emptySettings.darkMode);
+  const [nickname, setNickname] = useState<string>(emptySettings.nickname);
+  const [playerPlayAs, setPlayerPlayAs] = useState<PlayerMark>(emptySettings.playerPlayAs);
+
+  return { darkMode, setDarkMode, nickname, setNickname, playerPlayAs, setPlayerPlayAs };
 };

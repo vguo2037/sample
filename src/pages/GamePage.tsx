@@ -4,36 +4,43 @@ import { GameStatusContext, SettingsContext } from "../utils";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { GamePanel, ModePicker, TurnDisplayer } from "../components";
 import "../styles/gamePanel.scss";
-import { makeNpcMove } from "../utils/gameControl";
+import { makeNpcMove, reverseMark, winningOutcome } from "../utils/gameControl";
 
 const GamePage = () => {
   const navigate = useNavigate();
   const gameStatusContext = useContext(GameStatusContext);
   const {
     gameMode, setGameMode,
-    score, resetScore,
+    gameOutcome,
+    score, addScore, resetScore,
     pastMoves, undoMove,
     currentPlayer
   } = gameStatusContext;
-  const settingsContext = useContext(SettingsContext);
+  const { nickname, playerPlayAs } = useContext(SettingsContext);
   const [isNpcTurn, setIsNpcTurn] = useState<boolean>(false);
 
   useEffect(() => {
+    if (winningOutcome(playerPlayAs, gameOutcome)) addScore();
+  }, [gameOutcome]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const npcPlayAs = reverseMark(playerPlayAs);
+
     const makeNpcTurn = async () => {
       setIsNpcTurn(true);
 
       const delayTime = Math.random() * 1000 + 500;
       await new Promise(res => setTimeout(res, delayTime)); // delay for realism
 
-      makeNpcMove(gameStatusContext);
+      makeNpcMove(gameStatusContext, npcPlayAs);
       setIsNpcTurn(false);
     };
 
-    if (gameMode === "NPC" && currentPlayer === "O") makeNpcTurn();
-  }, [currentPlayer]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (gameMode === "NPC" && currentPlayer === npcPlayAs) makeNpcTurn();
+  }, [currentPlayer, gameMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (<>
-    <p className="flex-row">{settingsContext?.nickname}'s current score is: {score}
+    <p className="flex-row">{nickname}'s current score is: {score}
       <span><Button variant="secondary" onClick={() => resetScore()}>Reset</Button></span>
     </p>
     <TurnDisplayer isNpcTurn={isNpcTurn} />

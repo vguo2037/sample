@@ -3,11 +3,11 @@
   cursor: pointer;
   width: 2.5rem;
   height: 1.25rem;
-  background-color: #97CDE2;
   -webkit-transition: .4s;
   transition: .4s;
   border-radius: 34px;
-  border: 1px solid var(--bs-dark);
+  border: 1px solid var(--bs-border-color);
+  background-color: var(--bs-dark-bg-subtle);
 
   &:before {
     position: absolute;
@@ -20,7 +20,7 @@
     -moz-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
-    background-color: #FFD05B;
+    background-color: var(--bs-light);
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 50%;
@@ -32,12 +32,25 @@
   };  
 
   &:has(.toggle-input:checked) {
-    background-color: #18186D;
-    border: 1px solid var(--bs-light);
+    background-color: var(--bs-success);
 
     &:before {
       left: calc(100% - 1.1rem + 0.5px);
-      background-color: #E4EFF9;
     };
   };
 };
+
+#dark-mode-toggle {
+  background-color: #97CDE2;
+  &:before {
+    background-color: #FFD05B;
+  };
+
+  &:has(.toggle-input:checked) {
+    background-color: #18186D;
+
+    &:before {
+      background-color: #DFEFFF;
+    };
+  };
+}

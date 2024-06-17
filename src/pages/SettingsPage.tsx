@@ -6,14 +6,18 @@ import { NicknameSetter, StyleWrapper, Toggle } from "../components";
 
 const SettingsPage = () => {
   const navigate = useNavigate();
-  const settingsContext = useContext(SettingsContext);
+  const {
+    nickname, setNickname, darkMode, setDarkMode, playerPlayAs, setPlayerPlayAs
+  } = useContext(SettingsContext);
 
-  const [newNickname, setNewNickname] = useState(settingsContext?.nickname);
-  const [newDarkMode, setNewDarkMode] = useState(settingsContext?.darkMode);
+  const [newNickname, setNewNickname] = useState(nickname);
+  const [newDarkMode, setNewDarkMode] = useState(darkMode);
+  const [newPlayerPlayAs, setNewPlayerPlayAs] = useState(playerPlayAs);
 
   const handleSave = () => {
-    settingsContext?.setNickname(newNickname);
-    settingsContext?.setDarkMode(newDarkMode);
+    setNickname(newNickname);
+    setDarkMode(newDarkMode);
+    setPlayerPlayAs(newPlayerPlayAs);
     navigate(-1);
   };
   const handleCancel = () => navigate(-1);
@@ -32,11 +36,22 @@ const SettingsPage = () => {
       <Form onSubmit={handleSave}>
         <Form.Group controlId="nickname">
           <Form.Label>Nickname</Form.Label>
-          <NicknameSetter newNickname={newNickname} setNewNickname={setNewNickname} changeNickname={changeNickname} />
+          <NicknameSetter {...{newNickname, setNewNickname, changeNickname}} />
+        </Form.Group>
+        <Form.Group controlId="playerMark">
+          <Form.Label>Play as</Form.Label>
+          <Form.Check
+            type="radio" label="Player 1 (X)" name="playAsRadio" id="playAsRadio-X"
+            checked={newPlayerPlayAs === "X"} onChange={() => setNewPlayerPlayAs("X")}
+          />
+          <Form.Check
+            type="radio" label="Player 2 (O)" name="playAsRadio" id="playAsRadio-O"
+            checked={newPlayerPlayAs === "O"} onChange={() => setNewPlayerPlayAs("O")}
+          />
         </Form.Group>
         <Form.Group controlId="darkMode" className="flex-row horizontal-group">
           <Form.Label>Dark mode?</Form.Label>
-          <Toggle value={newDarkMode} onChange={changeDarkMode} />
+          <Toggle value={newDarkMode} onChange={changeDarkMode} id="dark-mode-toggle" />
         </Form.Group>
       </Form>
       <ButtonGroup>

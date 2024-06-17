@@ -64,7 +64,6 @@ export const useGameStatusValues = () => {
     if (currentOutcome !== "none") {
       setGameMode("ended");
       setGameOutcome(currentOutcome);
-      if (currentOutcome === "win") addScore();
     } else {
       switchCurrentPlayer();
     };
