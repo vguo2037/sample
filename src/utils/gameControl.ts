@@ -1,4 +1,4 @@
-import { Board, CellMove, CellWinnableCheckInputs, GameMode, GameOutcome, GameOutcomeChecker, GameStatus, NPCDifficulty, NPCStrategyInput, OutcomeStartingCell, PlayerMark } from "./types";
+import { Board, CellCoords, CellMove, CellWinnableCheckInputs, GameMode, GameOutcome, GameOutcomeChecker, GameStatus, MoveOutcomeChecker, NPCDifficulty, NPCStrategyInput, PlayerMark, WinType } from "./types";
 
 export const noop = () => {};
 
@@ -43,13 +43,35 @@ const checkCellWinnable = ({ board, row, col, playAs }: CellWinnableCheckInputs)
 
   boardCopy[row][col] = playAs;
   const simulatedSelfMove = checkMoveOutcome(boardCopy, { row, col, mark: playAs });
-  if (winningOutcome(playAs, simulatedSelfMove)) return playAs;
+  if (winningOutcome(playAs, simulatedSelfMove.gameOutcome)) return playAs;
 
   boardCopy[row][col] = opponentPlayAs;
   const simulatedOpponentMove = checkMoveOutcome(boardCopy, { row, col, mark: opponentPlayAs });
-  if (winningOutcome(opponentPlayAs, simulatedOpponentMove)) return opponentPlayAs;
+  if (winningOutcome(opponentPlayAs, simulatedOpponentMove.gameOutcome)) return opponentPlayAs;
 
   return null;
+};
+
+export const getWinningCells = (wins: WinType[], lastMove: CellMove) => {
+  const winningCells: CellCoords[] = [];
+  for (const w of wins) {
+    switch (w) {
+      case "rowWin": // TODO board size
+        for (let i=0; i<3; i++) winningCells.push({ row: lastMove.row, col: i });
+        break;
+      case "colWin":
+        for (let i=0; i<3; i++) winningCells.push({ row: i, col: lastMove.row });
+        break;
+      case "principDiagWin":
+        for (let i=0; i<3; i++) winningCells.push({ row: i, col: i });
+        break;
+      case "secondDiagWin":
+        for (let i=0; i<3; i++) winningCells.push({ row: i, col: 2-i });
+        break;
+    };
+  };
+
+  return winningCells;
 };
 
 const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
@@ -90,48 +112,67 @@ export const makeNpcMove = (
   handleCellSelect({ row: chosenCell[0], col: chosenCell[1], mark: npcPlayAs });
 };
 
-const checkDiagWin = ({ board, currentRow, currentCol, currentPlayer }: OutcomeStartingCell) => {
-  if ((currentRow + currentCol) % 2 > 0) return false; // current cell not on diagonals
-  if (board[1][1] !== currentPlayer) return false;
+const checkDiagWin: MoveOutcomeChecker = ({ board, currentRow, currentCol, currentPlayer }) => {
+  if ((currentRow + currentCol) % (board.length-1) > 0) return []; // current cell not on diagonals
+
+  const center = Math.floor(board.length / 2);
+  if (board[center][center] !== currentPlayer) return [];
 
   // check principal diagonal
-  if (board[0][0] === currentPlayer && board[2][2] === currentPlayer) return true;
-  
+  let principalWin = true;
+  for (let i=0; i<board.length; i++) {
+    if (board[i][i] !== currentPlayer) {
+      principalWin = false;
+      break;
+    };
+  };
+
   // check secondary diagonal
-  if (board[0][2] === currentPlayer && board[2][0] === currentPlayer) return true;
+  let secondaryWin = true;
+  for (let i=0; i<board.length; i++) {
+    if (board[i][board.length-1-i] !== currentPlayer) {
+      secondaryWin = false;
+      break;
+    };
+  };
 
-  return false;
+  const wins: WinType[] = [];
+  if (principalWin) wins.push("principDiagWin");
+  if (secondaryWin) wins.push("secondDiagWin");
+  return wins;
 };
 
-const checkRowWin = ({ board, currentPlayer, currentRow }: OutcomeStartingCell) => {
+const checkRowWin: MoveOutcomeChecker = ({ board, currentPlayer, currentRow }) => {
   for (let col=0; col<board[0].length; col++) {
-    if (board[currentRow][col] !== currentPlayer) return false;
+    if (board[currentRow][col] !== currentPlayer) return [];
   };
-  return true;
+  return ["rowWin"];
 };
 
-const checkColWin = ({ board, currentPlayer, currentCol }: OutcomeStartingCell) => {
+const checkColWin: MoveOutcomeChecker = ({ board, currentPlayer, currentCol }) => {
   for (let row=0; row<board.length; row++) {
-    if (board[row][currentCol] !== currentPlayer) return false;
+    if (board[row][currentCol] !== currentPlayer) return [];
   };
-  return true;
+  return ["colWin"];
 };
 
-export const checkMoveOutcome: GameOutcomeChecker = (
-  board: Board,
-  { row: currentRow, col: currentCol, mark: currentPlayer }: CellMove
-) => {
+export const checkMoveOutcome: GameOutcomeChecker = (board: Board, currentMove: CellMove) => {
+  const { row: currentRow, col: currentCol, mark: currentPlayer } = currentMove;
   const currentOutcomeStartingCell = { board, currentRow, currentCol, currentPlayer };
 
-  if (
-    checkDiagWin(currentOutcomeStartingCell) ||
-    checkRowWin(currentOutcomeStartingCell) ||
-    checkColWin(currentOutcomeStartingCell)
-  ) return currentPlayer === "X" ? "xWin" : "oWin";
+  const wins = [checkDiagWin, checkRowWin, checkColWin].flatMap(
+    (checkWin) => checkWin(currentOutcomeStartingCell)
+  );
+
+  if (wins.length) {
+    // displayWin(board, wins, currentMove);
+    const gameOutcome = currentPlayer === "X" ? "xWin" : "oWin";
+    return { gameOutcome, wins };
+  }
 
   for (let i=0; i<board.length; i++) for (let j=0; j<board[0].length; j++) {
-    if (!board[i][j]) return "none"; // game has not yet ended
+    if (!board[i][j]) return { gameOutcome: "none" }; // game has not yet ended
   };
 
-  return "draw";
+  return { gameOutcome: "draw" };
 };

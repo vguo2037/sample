@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { forwardRef, useContext, useImperativeHandle, useState } from 'react';
 import { GameStatusContext, SettingsContext } from '../utils';
-import { PlayerMark } from '../utils/types';
+import { GameCellObject, PlayerMark } from '../utils/types';
 import { ImCross } from "react-icons/im";
 import { RiRadioButtonFill } from "react-icons/ri";
+const X_WIN_DISPLAY = `${process.env.PUBLIC_URL}/xWinDisplay.gif`;
+const O_WIN_DISPLAY = `${process.env.PUBLIC_URL}/oWinDisplay.gif`;
 
 interface GameCellProps {
   row: number;
@@ -11,7 +13,7 @@ interface GameCellProps {
   disabled: boolean;
 }
 
-const GameCell: React.FC<GameCellProps> = ({ row, col, id, disabled }) => {
+const GameCell = forwardRef<GameCellObject, GameCellProps>(({ row, col, id, disabled }, ref) => {
   const {
     currentPlayer, gameMode, handleCellSelect, board
   } = useContext(GameStatusContext);
@@ -20,6 +22,10 @@ const GameCell: React.FC<GameCellProps> = ({ row, col, id, disabled }) => {
   const { darkMode } = useContext(SettingsContext);
   const bgColor = darkMode ? "bg-dark" : "bg-light";
   const textColor = darkMode ? "text-light" : "text-dark";
+
+  const [isWinningCell, setIsWinningCell] = useState(false);
+
+  useImperativeHandle(ref, () => ({ setIsWinningCell }));
 
   const handleSelect = () => {
     if (!currentPlayer) {
@@ -32,21 +38,27 @@ const GameCell: React.FC<GameCellProps> = ({ row, col, id, disabled }) => {
   const displayCellMark = (mark: PlayerMark | null) => {
     switch (mark) {
       case "X":
-        return <ImCross size={24} />;
-      case "O":
-        return <RiRadioButtonFill size={24} />;
+        return isWinningCell
+          ? <img src={X_WIN_DISPLAY} alt="x winning animation" />
+          : <ImCross size={24} />
+        ;
+        case "O":
+          return isWinningCell
+            ? <img src={O_WIN_DISPLAY} alt="o winning animation" />
+            : <RiRadioButtonFill size={24} />
+          ;
       default:
         return null;
     };
   };
 
   return (<>
-    <button className={`game-cell center-children ${bgColor} ${textColor}`} id={id}
+    <button className={`game-cell center-children ${bgColor} ${textColor}`} id={id} // ref={ref}
       onClick={handleSelect} disabled={disabled || Boolean(cellMark) || gameMode === "ended"}
     >
       {displayCellMark(cellMark)}
     </button>
   </>);
-};
+});
 
 export default GameCell;

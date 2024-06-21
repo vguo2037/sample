@@ -1,6 +1,6 @@
 import { createContext, useEffect, useRef, useState } from "react";
-import type { GameMode, GameOutcome, PlayerMark, GameStatus, Board, CellMove, NPCDifficulty } from "../types";
-import { checkMoveOutcome, noop } from "../gameControl";
+import type { GameMode, GameOutcome, PlayerMark, GameStatus, Board, CellMove, NPCDifficulty, CellCoords, WinType } from "../types";
+import { checkMoveOutcome, getWinningCells, noop } from "../gameControl";
 
 const emptyGameStatus: GameStatus = { 
   score: 0, addScore: noop, resetScore: noop,
@@ -9,7 +9,8 @@ const emptyGameStatus: GameStatus = {
   gameOutcome: "none", setGameOutcome: noop,
   board: Array(3).fill(Array(3).fill(null)), handleCellSelect: noop, resetHistory: noop,
   pastMoves: [], undoMove: noop,
-  npcDifficulty: 0, setNpcDifficulty: noop
+  npcDifficulty: 0, setNpcDifficulty: noop,
+  winningCells: []
 };
 
 export const GameStatusContext = createContext<GameStatus>(emptyGameStatus);
@@ -20,9 +21,10 @@ export const useGameStatusValues = () => {
   const [gameMode, setGameMode] = useState<GameMode>(emptyGameStatus.gameMode);
   const [gameOutcome, setGameOutcome] = useState<GameOutcome>(emptyGameStatus.gameOutcome);
   const [board, setBoard] = useState<Board>(emptyGameStatus.board);
-  const pastMoves = useRef<Array<CellMove>>(emptyGameStatus.pastMoves);
+  const pastMoves = useRef<CellMove[]>(emptyGameStatus.pastMoves);
   const [npcDifficulty, setNpcDifficulty] = useState<NPCDifficulty>(emptyGameStatus.npcDifficulty);
   const [lastActionIsUndo, setLastActionIsUndo] = useState<boolean>(false);
+  const winningCells = useRef<CellCoords[]>(emptyGameStatus.pastMoves);
 
   const addScore = () => setScore(s => s + 1);
   const resetScore = () => {
@@ -52,6 +54,8 @@ export const useGameStatusValues = () => {
     setBoard(emptyGameStatus.board);
     pastMoves.current = [];
     setLastActionIsUndo(false);
+    setGameOutcome("none");
+    winningCells.current = [];
   };
 
   useEffect(() => {
@@ -61,10 +65,12 @@ export const useGameStatusValues = () => {
       return;
     };
 
-    const currentOutcome = checkMoveOutcome(board, pastMoves.current[pastMoves.current.length-1]);
-    if (currentOutcome !== "none") {
+    const lastMove = pastMoves.current[pastMoves.current.length-1];
+    const { gameOutcome, wins } = checkMoveOutcome(board, lastMove);
+    if (gameOutcome !== "none") {
       setGameMode("ended");
-      setGameOutcome(currentOutcome);
+      setGameOutcome(gameOutcome);
+      winningCells.current = getWinningCells(wins as WinType[], lastMove);
     } else {
       switchCurrentPlayer();
     };
@@ -95,6 +101,7 @@ export const useGameStatusValues = () => {
     gameOutcome, setGameOutcome,
     board, handleCellSelect, resetHistory,
     pastMoves: pastMoves.current, undoMove,
-    npcDifficulty, setNpcDifficulty
+    npcDifficulty, setNpcDifficulty,
+    winningCells: winningCells.current
   };
 };

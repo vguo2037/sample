@@ -18,6 +18,9 @@
 
 .game-cell {
   --cell-size: min(96px, 20vw);
+  img {
+    width: min(72px, 15vw);
+  }
 
   cursor: pointer;
   width: var(--cell-size);
