@@ -1,4 +1,4 @@
-import { Board, CellCoords, CellMove, CellWinnableCheckInputs, GameMode, GameOutcome, GameOutcomeChecker, GameStatus, MoveOutcomeChecker, NPCDifficulty, NPCStrategyInput, PlayerMark, WinType } from "./types";
+import { Board, BoardSize, CellCoords, CellMove, CellWinnableCheckInputs, GameOutcome, GameOutcomeChecker, GameStarter, GameStatus, MoveOutcomeChecker, NPCStrategyInput, PlayerMark, WinType } from "./types";
 
 export const noop = () => {};
 
@@ -10,15 +10,14 @@ export const winningOutcome = (playAs: PlayerMark, outcome: GameOutcome) => {
   return false;
 };
 
-export const startGame = (
-  mode: GameMode,
-  { setGameMode, resetHistory, currentPlayer, switchCurrentPlayer, setNpcDifficulty }: GameStatus,
-  difficulty: NPCDifficulty = 0
-) => {
+export const startGame: GameStarter = ({
+  mode, difficulty = 0, boardSize, playerPlayAs,
+  gameStatusContext: { setGameMode, resetHistory, currentPlayer, switchCurrentPlayer, setNpcDifficulty }
+}) => {
   setNpcDifficulty(difficulty);
   setGameMode(mode);
   if (currentPlayer !== "X") switchCurrentPlayer();
-  resetHistory();
+  resetHistory(boardSize, playerPlayAs);
 };
 
 const npcStrategyRandom = ({ board }: NPCStrategyInput) => {
@@ -52,21 +51,21 @@ const checkCellWinnable = ({ board, row, col, playAs }: CellWinnableCheckInputs)
   return null;
 };
 
-export const getWinningCells = (wins: WinType[], lastMove: CellMove) => {
+export const getWinningCells = (wins: WinType[], lastMove: CellMove, boardSize: BoardSize) => {
   const winningCells: CellCoords[] = [];
   for (const w of wins) {
     switch (w) {
-      case "rowWin": // TODO board size
-        for (let i=0; i<3; i++) winningCells.push({ row: lastMove.row, col: i });
+      case "rowWin":
+        for (let i=0; i<boardSize; i++) winningCells.push({ row: lastMove.row, col: i });
         break;
       case "colWin":
-        for (let i=0; i<3; i++) winningCells.push({ row: i, col: lastMove.row });
+        for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: lastMove.col });
         break;
       case "principDiagWin":
-        for (let i=0; i<3; i++) winningCells.push({ row: i, col: i });
+        for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: i });
         break;
       case "secondDiagWin":
-        for (let i=0; i<3; i++) winningCells.push({ row: i, col: 2-i });
+        for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: boardSize-1-i });
         break;
     };
   };
@@ -76,6 +75,7 @@ export const getWinningCells = (wins: WinType[], lastMove: CellMove) => {
 
 const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
   let winnableOpponent = null;
+  const boardSize = board.length;
 
   // check winnable cells
   for (let row=0; row<board.length; row++) for (let col=0; col<board[0].length; col++) {
@@ -88,7 +88,8 @@ const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
   if (winnableOpponent) return winnableOpponent;
 
   // pick center
-  if (!board[1][1]) return [1, 1];
+  const center = Math.floor(boardSize / 2);
+  if (!board[center][center]) return [center, center];
 
   // pick any cell
   return npcStrategyRandom({ board, npcPlayAs });
@@ -171,8 +172,8 @@ export const checkMoveOutcome: GameOutcomeChecker = (board: Board, currentMove: 
   }
 
   for (let i=0; i<board.length; i++) for (let j=0; j<board[0].length; j++) {
-    if (!board[i][j]) return { gameOutcome: "none" }; // game has not yet ended
+    if (!board[i][j]) return { gameOutcome: "none", wins: [] }; // game has not yet ended
   };
 
-  return { gameOutcome: "draw" };
+  return { gameOutcome: "draw", wins: [] };
 };

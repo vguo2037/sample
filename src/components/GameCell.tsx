@@ -53,7 +53,7 @@ const GameCell = forwardRef<GameCellObject, GameCellProps>(({ row, col, id, disa
   };
 
   return (<>
-    <button className={`game-cell center-children ${bgColor} ${textColor}`} id={id} // ref={ref}
+    <button className={`game-cell center-children ${bgColor} ${textColor}`} id={id}
       onClick={handleSelect} disabled={disabled || Boolean(cellMark) || gameMode === "ended"}
     >
       {displayCellMark(cellMark)}

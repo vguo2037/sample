@@ -3,7 +3,7 @@ import './styles/App.scss';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import { SettingsContext, useSettingsValues, GameStatusContext, useGameStatusValues } from "./utils";
 import { GamePage, LandingPage, SettingsPage } from './pages';
-import { GlobalStyleWrapper } from './components';
+import { GlobalStyleWrapper, MarkInputCursor } from './components';
 import { StyleOverride } from './utils/types';
 
 const App = () => {
@@ -28,6 +28,7 @@ const App = () => {
     <SettingsContext.Provider value={settingsValues}>
       <GameStatusContext.Provider value={gameValues}>
         <GlobalStyleWrapper override={globalStyleOverride}>
+          {/* <MarkInputCursor /> */}
           <RouterProvider router={router} />
         </GlobalStyleWrapper>
       </GameStatusContext.Provider>

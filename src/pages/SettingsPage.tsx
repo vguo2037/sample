@@ -1,6 +1,6 @@
 import React, { useContext, ChangeEventHandler, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { SettingsContext } from "../utils";
+import { GameStatusContext, SettingsContext } from "../utils";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
 import { NicknameSetter, PageStyleWrapper, Toggle } from "../components";
 import { StyleOverride } from "../utils/types";
@@ -12,17 +12,24 @@ interface SettingsPageProps {
 const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) => {
   const navigate = useNavigate();
   const {
-    nickname, setNickname, darkMode, setDarkMode, playerPlayAs, setPlayerPlayAs
+    nickname, setNickname,
+    darkMode, setDarkMode,
+    playerPlayAs, setPlayerPlayAs,
+    boardSize, setBoardSize
   } = useContext(SettingsContext);
+  const { resetHistory } = useContext(GameStatusContext);
 
   const [newNickname, setNewNickname] = useState(nickname);
   const [newDarkMode, setNewDarkMode] = useState(darkMode);
   const [newPlayerPlayAs, setNewPlayerPlayAs] = useState(playerPlayAs);
+  const [newBoardSize, setNewBoardSize] = useState(boardSize);
 
   const handleSave = () => {
     setNickname(newNickname);
     setDarkMode(newDarkMode);
     setPlayerPlayAs(newPlayerPlayAs);
+    resetHistory(newBoardSize, newPlayerPlayAs);
+    setBoardSize(newBoardSize);
     navigate(-1);
   };
   const handleCancel = () => navigate(-1);
@@ -48,7 +55,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
         <NicknameSetter {...{newNickname, setNewNickname, changeNickname}} />
       </Form.Group>
       <Form.Group controlId="playerMark">
-        <Form.Label>Play as</Form.Label>
+        <p>Play as</p>
         <Form.Check
           type="radio" label="Player 1 (X)" name="playAsRadio" id="playAsRadio-X"
           checked={newPlayerPlayAs === "X"} onChange={() => setNewPlayerPlayAs("X")}
@@ -56,6 +63,21 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
         <Form.Check
           type="radio" label="Player 2 (O)" name="playAsRadio" id="playAsRadio-O"
           checked={newPlayerPlayAs === "O"} onChange={() => setNewPlayerPlayAs("O")}
+        />
+      </Form.Group>
+      <Form.Group controlId="boardSize">
+        <p>Play as</p>
+        <Form.Check
+          type="radio" label="3" name="boardSizeRadio" id="boardSizeRadio-3"
+          checked={newBoardSize === 3} onChange={() => setNewBoardSize(3)}
+        />
+        <Form.Check
+          type="radio" label="5" name="boardSizeRadio" id="boardSizeRadio-5"
+          checked={newBoardSize === 5} onChange={() => setNewBoardSize(5)}
+        />
+        <Form.Check
+          type="radio" label="7" name="boardSizeRadio" id="boardSizeRadio-3"
+          checked={newBoardSize === 7} onChange={() => setNewBoardSize(7)}
         />
       </Form.Group>
       <Form.Group controlId="darkMode" className="flex-row horizontal-group">

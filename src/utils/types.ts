@@ -5,8 +5,8 @@ export type Settings = {
   setNickname: React.Dispatch<React.SetStateAction<string>>,
   playerPlayAs: PlayerMark,
   setPlayerPlayAs: React.Dispatch<React.SetStateAction<PlayerMark>>,
-  boardDimension: BoardDimensions,
-  setBoardDimension: React.Dispatch<React.SetStateAction<BoardDimensions>>
+  boardSize: BoardSize,
+  setBoardSize: React.Dispatch<React.SetStateAction<BoardSize>>
 };
 
 export type StyleOverride = Pick<Settings, "darkMode"> | undefined;
@@ -16,7 +16,7 @@ export type PlayerMark = "X" | "O";
 export type GameOutcome = "xWin" | "oWin" | "draw" | "none";
 export type Board = Array<Array<PlayerMark | null>>;
 export type NPCDifficulty = 0 | 1 | 2;
-export type BoardDimensions = 3 | 5;
+export type BoardSize = 3 | 5 | 7;
 
 export type GameStatus = {
   score: number,
@@ -30,12 +30,12 @@ export type GameStatus = {
   setGameOutcome: React.Dispatch<React.SetStateAction<GameOutcome>>,
   board: Board,
   handleCellSelect: (move: CellMove) => void,
-  resetHistory: () => void,
+  resetHistory: (newBoardSize: BoardSize, playerPlayAs: PlayerMark) => void,
   pastMoves: Array<CellMove>,
   undoMove: () => void
   npcDifficulty: NPCDifficulty,
   setNpcDifficulty: React.Dispatch<React.SetStateAction<NPCDifficulty>>,
-  winningCells: CellCoords[]
+  wins: WinType[],
 };
 
 export type CellCoords = {
@@ -46,6 +46,16 @@ export type CellCoords = {
 export type CellMove = CellCoords & {
   mark: Exclude<PlayerMark, undefined>
 };
+
+export type GameStarter = ({
+  mode, gameStatusContext, difficulty, boardSize
+}: {
+  mode: GameMode,
+  difficulty?: NPCDifficulty,
+  boardSize: BoardSize,
+  playerPlayAs: PlayerMark,
+  gameStatusContext: GameStatus
+}) => void;
 
 export type OutcomeStartingCell = {
   currentRow: number,
@@ -65,7 +75,7 @@ export type GameOutcomeChecker = (
   { row, col, mark }: CellMove
 ) => {
   gameOutcome: GameOutcome;
-  wins?: WinType[];
+  wins: WinType[];
 };
 
 export type NPCStrategyInput = {

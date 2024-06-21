@@ -6,10 +6,13 @@ import { NPCDifficulty } from "../utils/types";
 
 const ModePicker = () => {
   const gameStatusContext = useContext(GameStatusContext);
+  const { boardSize } = useContext(SettingsContext);
   const { nickname, playerPlayAs } = useContext(SettingsContext);
 
   const handleNPCSelect = (difficulty: NPCDifficulty) => {
-    startGame("NPC", gameStatusContext, difficulty);
+    startGame({
+      mode: "multiplayer", boardSize, gameStatusContext, difficulty, playerPlayAs
+    });
   };
 
   return (<div className="center-children">
@@ -35,7 +38,9 @@ const ModePicker = () => {
           Hard
         </Dropdown.Item>
       </DropdownButton>
-      <Button variant="primary" onClick={() => startGame("multiplayer", gameStatusContext)}
+      <Button variant="primary" onClick={() => startGame({
+        mode: "multiplayer", boardSize, gameStatusContext, playerPlayAs
+      })}
         tooltip-text={`Score is tracked for ${nickname} (${playerPlayAs})`}
       >
         Another player
