@@ -7,6 +7,8 @@ export type Settings = {
   setPlayerPlayAs: React.Dispatch<React.SetStateAction<PlayerMark>>
 };
 
+export type StyleOverride = Pick<Settings, "darkMode"> | undefined;
+
 export type GameMode = "NPC" | "multiplayer" | "ended" | "none";
 export type PlayerMark = "X" | "O";
 export type GameOutcome = "xWin" | "oWin" | "draw" | "none";

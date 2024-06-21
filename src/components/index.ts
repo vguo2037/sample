@@ -1,4 +1,5 @@
-export { default as StyleWrapper } from "./StyleWrapper";
+export { default as PageStyleWrapper } from "./PageStyleWrapper";
+export { default as GlobalStyleWrapper } from "./GlobalStyleWrapper";
 export { default as Toggle } from "./Toggle";
 export { default as NicknameSetter } from "./NicknameSetter";
 export { default as GamePanel } from "./GamePanel";

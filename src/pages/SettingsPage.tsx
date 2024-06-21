@@ -1,10 +1,15 @@
-import React, { useContext, ChangeEventHandler, useState } from "react";
+import React, { useContext, ChangeEventHandler, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { SettingsContext } from "../utils";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
-import { NicknameSetter, StyleWrapper, Toggle } from "../components";
+import { NicknameSetter, PageStyleWrapper, Toggle } from "../components";
+import { StyleOverride } from "../utils/types";
 
-const SettingsPage = () => {
+interface SettingsPageProps {
+  setGlobalStyleOverride: React.Dispatch<React.SetStateAction<StyleOverride>>;
+};
+
+const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) => {
   const navigate = useNavigate();
   const {
     nickname, setNickname, darkMode, setDarkMode, playerPlayAs, setPlayerPlayAs
@@ -30,36 +35,39 @@ const SettingsPage = () => {
     setNewDarkMode(e.target.checked);
   };
 
-  return (<>
-    <StyleWrapper override={{darkMode: newDarkMode}}>
-      <h1>Settings</h1>
-      <Form onSubmit={handleSave}>
-        <Form.Group controlId="nickname">
-          <Form.Label>Nickname</Form.Label>
-          <NicknameSetter {...{newNickname, setNewNickname, changeNickname}} />
-        </Form.Group>
-        <Form.Group controlId="playerMark">
-          <Form.Label>Play as</Form.Label>
-          <Form.Check
-            type="radio" label="Player 1 (X)" name="playAsRadio" id="playAsRadio-X"
-            checked={newPlayerPlayAs === "X"} onChange={() => setNewPlayerPlayAs("X")}
-          />
-          <Form.Check
-            type="radio" label="Player 2 (O)" name="playAsRadio" id="playAsRadio-O"
-            checked={newPlayerPlayAs === "O"} onChange={() => setNewPlayerPlayAs("O")}
-          />
-        </Form.Group>
-        <Form.Group controlId="darkMode" className="flex-row horizontal-group">
-          <Form.Label>Dark mode?</Form.Label>
-          <Toggle value={newDarkMode} onChange={changeDarkMode} id="dark-mode-toggle" />
-        </Form.Group>
-      </Form>
-      <ButtonGroup>
-        <Button variant="secondary" onClick={handleCancel}>Back</Button>
-        <Button variant="success" onClick={handleSave}>Save</Button>
-      </ButtonGroup>
-    </StyleWrapper>
-  </>);
+  useEffect(() => {
+    setGlobalStyleOverride({ darkMode: newDarkMode });
+    return () => setGlobalStyleOverride(undefined);
+  }, [newDarkMode, setGlobalStyleOverride]);
+
+  return (<PageStyleWrapper>
+    <h1>Settings</h1>
+    <Form onSubmit={handleSave}>
+      <Form.Group controlId="nickname">
+        <Form.Label>Nickname</Form.Label>
+        <NicknameSetter {...{newNickname, setNewNickname, changeNickname}} />
+      </Form.Group>
+      <Form.Group controlId="playerMark">
+        <Form.Label>Play as</Form.Label>
+        <Form.Check
+          type="radio" label="Player 1 (X)" name="playAsRadio" id="playAsRadio-X"
+          checked={newPlayerPlayAs === "X"} onChange={() => setNewPlayerPlayAs("X")}
+        />
+        <Form.Check
+          type="radio" label="Player 2 (O)" name="playAsRadio" id="playAsRadio-O"
+          checked={newPlayerPlayAs === "O"} onChange={() => setNewPlayerPlayAs("O")}
+        />
+      </Form.Group>
+      <Form.Group controlId="darkMode" className="flex-row horizontal-group">
+        <Form.Label>Dark mode?</Form.Label>
+        <Toggle value={newDarkMode} onChange={changeDarkMode} id="dark-mode-toggle" />
+      </Form.Group>
+    </Form>
+    <ButtonGroup>
+      <Button variant="secondary" onClick={handleCancel}>Back</Button>
+      <Button variant="success" onClick={handleSave}>Save</Button>
+    </ButtonGroup>
+  </PageStyleWrapper>);
 };
 
 export default SettingsPage;

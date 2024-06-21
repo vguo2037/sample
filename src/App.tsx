@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './styles/App.scss';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import { SettingsContext, useSettingsValues, GameStatusContext, useGameStatusValues } from "./utils";
 import { GamePage, LandingPage, SettingsPage } from './pages';
-import { StyleWrapper } from './components';
+import { GlobalStyleWrapper } from './components';
+import { StyleOverride } from './utils/types';
 
 const App = () => {
   const settingsValues = useSettingsValues();
   const gameValues = useGameStatusValues();
+  const [globalStyleOverride, setGlobalStyleOverride] = useState<StyleOverride>();
 
   const router = createHashRouter(
     [
@@ -15,7 +17,7 @@ const App = () => {
         path: "/",
         children : [
           { path: "/", element: <LandingPage /> },
-          { path: "settings", element: <SettingsPage /> },
+          { path: "settings", element: <SettingsPage setGlobalStyleOverride={setGlobalStyleOverride} /> },
           { path: "game", element: <GamePage /> }
         ]
       }
@@ -25,9 +27,9 @@ const App = () => {
   return (
     <SettingsContext.Provider value={settingsValues}>
       <GameStatusContext.Provider value={gameValues}>
-        <StyleWrapper>
+        <GlobalStyleWrapper override={globalStyleOverride}>
           <RouterProvider router={router} />
-        </StyleWrapper>
+        </GlobalStyleWrapper>
       </GameStatusContext.Provider>
     </SettingsContext.Provider>
   );
