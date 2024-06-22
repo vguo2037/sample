@@ -11,7 +11,7 @@ const ModePicker = () => {
 
   const handleNPCSelect = (difficulty: NPCDifficulty) => {
     startGame({
-      mode: "multiplayer", boardSize, gameStatusContext, difficulty, playerPlayAs
+      mode: "NPC", boardSize, gameStatusContext, difficulty, playerPlayAs
     });
   };
 

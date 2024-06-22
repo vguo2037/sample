@@ -66,7 +66,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
         />
       </Form.Group>
       <Form.Group controlId="boardSize">
-        <p>Play as</p>
+        <p>Board size</p>
         <Form.Check
           type="radio" label="3" name="boardSizeRadio" id="boardSizeRadio-3"
           checked={newBoardSize === 3} onChange={() => setNewBoardSize(3)}

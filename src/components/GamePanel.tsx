@@ -43,14 +43,16 @@ const GamePanel: React.FC<GamePanelProps> = ({ disabled }) => {
     else animateWinningCells(winningCells.current);
   }, [wins.length, winningCells, animateWinningCells, clearWinningCells]);
 
-  const gridTemplateAreas = `${("'" + (". ".repeat(boardSize)) + "' ").repeat(boardSize)}`
+  // const gridTemplateAreas = `${("'" + (". ".repeat(boardSize)) + "' ").repeat(boardSize)}`
 
   return (<motion.div
+    className="game-grid-wrapper"
     // required prevent replays of mounting/unmounting animation on page changes
     initial={panelStyle} animate={panelStyle}
     transition={{ type: "tween" }}
   >
-    <div className={"game-grid"} style={{ gridTemplateAreas }}>
+    <div className={`game-grid board-size-${boardSize}`}>
+    {/* <div className={"game-grid"} style={{ gridTemplateAreas }}> */}
       {Array.from(Array(boardSize*boardSize).keys()).map(i => {
         const [row, col] = [Math.floor(i / boardSize), i % boardSize];
         return <GameCell disabled={disabled} key={`cell-${row}-${col}`}

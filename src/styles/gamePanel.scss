@@ -1,15 +1,12 @@
-:has(.game-grid) {
+@use "sass:map";
+
+.game-grid-wrapper {
   overflow: hidden;
 };
 
 .game-grid {
   display: grid;
   overflow: hidden;
-  grid-template-areas:
-    ". . ."
-    ". . ."
-    ". . ."
-  ;
   gap: 2px;
   margin: 1rem;
   position: relative;
@@ -18,7 +15,7 @@
 
 .game-cell {
   --cell-size: min(96px, 20vw);
-  img {
+  svg, img {
     width: min(72px, 15vw);
   }
 
@@ -34,30 +31,39 @@
   &:disabled {
     cursor: not-allowed;
   };
+};
 
-  $gaps-per-axis: 2;
-  @for $i from 1 through $gaps-per-axis {
-    &:nth-child(#{$i})::before,
-    &:nth-child(#{$i})::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: calc($i * var(--cell-size) + ($i - 1) * 2px);
-      height: 100%;
-      pointer-events: none;
-      border-left: 2px dashed var(--bs-gray-600);
-    };
+$board-sizes: (3, 5, 7);
+@each $s in $board-sizes {
+  .game-grid[class*="board-size-#{$s}"] {
+    grid-template-columns: repeat($s, 1fr);
   };
-  @for $i from 1 through $gaps-per-axis {
-    &:nth-child(#{$i})::after,
-    &:nth-child(#{$i})::after {
-      content: '';
-      position: absolute;
-      top: calc($i * var(--cell-size) + ($i - 1) * 2px);
-      left: 0;
-      width: 100%;
-      pointer-events: none;
-      border-bottom: 2px dashed var(--bs-gray-600);
+
+  .game-cell {
+    // borders in-between cells
+    @for $i from 1 through ($s - 1) {
+      &:nth-child(#{$i})::before,
+      &:nth-child(#{$i})::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: calc($i * var(--cell-size) + ($i - 1) * 2px);
+        height: 100%;
+        pointer-events: none;
+        border-left: 2px dashed var(--bs-gray-600);
+      };
+    };
+    @for $i from 1 through ($s - 1) {
+      &:nth-child(#{$i})::after,
+      &:nth-child(#{$i})::after {
+        content: '';
+        position: absolute;
+        top: calc($i * var(--cell-size) + ($i - 1) * 2px);
+        left: 0;
+        width: 100%;
+        pointer-events: none;
+        border-bottom: 2px dashed var(--bs-gray-600);
+      };
     };
   };
 };
