@@ -1,9 +1,9 @@
 import React, { useContext, useRef, useEffect, useCallback } from 'react';
-import GameCell from './GameCell';
 import { motion } from "framer-motion";
-import { GameStatusContext, SettingsContext } from '../utils';
-import { CellCoords, GameCellObject, WinType } from '../utils/types';
-import { getWinningCells } from '../utils/gameControl';
+import { GameCell } from '..';
+import { GameStatusContext, SettingsContext } from '../../utils';
+import type { CellCoords, GameCellObject, WinType } from '../../utils/types';
+import { getWinningCells } from '../../utils/gameControl';
 
 interface GamePanelProps {
   disabled: boolean

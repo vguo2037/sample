@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { GameStatusContext, SettingsContext } from "../utils";
+import { GameStatusContext, SettingsContext } from "../../utils";
 import { Button, ButtonGroup } from "react-bootstrap";
-import { PageStyleWrapper } from "../components";
+import { PageStyleWrapper } from "../../components";
 
 const LandingPage = () => {
   const navigate = useNavigate();

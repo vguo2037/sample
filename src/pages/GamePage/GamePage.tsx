@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
+import "../../styles/gamePanel.scss";
 import { useNavigate } from "react-router-dom";
-import { GameStatusContext, SettingsContext } from "../utils";
 import { Button, ButtonGroup } from "react-bootstrap";
-import { GamePanel, ModePicker, PageStyleWrapper, TurnDisplayer } from "../components";
-import "../styles/gamePanel.scss";
-import { makeNpcMove, reverseMark, winningOutcome } from "../utils/gameControl";
+import { GameStatusContext, SettingsContext } from "../../utils";
+import { GamePanel, ModePicker, PageStyleWrapper, TurnDisplayer } from "../../components";
+import { makeNpcMove, reverseMark, winningOutcome } from "../../utils/gameControl";
 
 const GamePage = () => {
   const navigate = useNavigate();

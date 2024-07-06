@@ -1,6 +1,6 @@
 import React, { forwardRef, useContext, useImperativeHandle, useState } from 'react';
-import { GameStatusContext, SettingsContext } from '../utils';
-import { GameCellObject, PlayerMark } from '../utils/types';
+import type { GameCellObject, PlayerMark } from '../../utils/types';
+import { GameStatusContext, SettingsContext } from '../../utils';
 import { ImCross } from "react-icons/im";
 import { RiRadioButtonFill } from "react-icons/ri";
 const X_WIN_DISPLAY = `${process.env.PUBLIC_URL}/xWinDisplay.gif`;

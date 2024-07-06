@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { SettingsContext } from '../utils';
 import { AnimatePresence } from 'framer-motion'; 
+import { SettingsContext } from '../../utils';
 
 interface StyleWrapperProps {
   children: React.ReactNode,

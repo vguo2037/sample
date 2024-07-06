@@ -1,7 +1,7 @@
 import React, { ChangeEventHandler, useRef, useState } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { IoDiceSharp } from "react-icons/io5";
-import { requestRandomNicknames } from "../utils";
+import { requestRandomNicknames } from "../../utils";
 
 interface NicknameSetterProps {
   newNickname: string,

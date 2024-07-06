@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { GameStatusContext, SettingsContext } from "../utils";
-import { winningOutcome } from "../utils/gameControl";
+import { GameStatusContext, SettingsContext } from "../../utils";
+import { winningOutcome } from "../../utils/gameControl";
 
 interface TurnDisplayerProps {
   isNpcTurn: boolean

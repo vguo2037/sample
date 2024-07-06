@@ -1,5 +1,5 @@
 import React, { ChangeEventHandler } from 'react';
-import "../styles/toggle.scss";
+import "../../styles/toggle.scss";
 import { Form } from 'react-bootstrap';
 
 interface ToggleProps {

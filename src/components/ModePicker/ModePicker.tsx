@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { GameStatusContext, SettingsContext } from "../utils";
+import { GameStatusContext, SettingsContext } from "../../utils";
 import { Button, ButtonGroup, Dropdown, DropdownButton } from "react-bootstrap";
-import { startGame } from "../utils/gameControl";
-import { NPCDifficulty } from "../utils/types";
+import { startGame } from "../../utils/gameControl";
+import type { NPCDifficulty } from "../../utils/types";
 
 const ModePicker = () => {
   const gameStatusContext = useContext(GameStatusContext);

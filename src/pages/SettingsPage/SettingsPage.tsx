@@ -1,9 +1,9 @@
 import React, { useContext, ChangeEventHandler, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { GameStatusContext, SettingsContext } from "../utils";
+import { GameStatusContext, SettingsContext } from "../../utils";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
-import { NicknameSetter, PageStyleWrapper, Toggle } from "../components";
-import { StyleOverride } from "../utils/types";
+import { NicknameSetter, PageStyleWrapper, Toggle } from "../../components";
+import type { StyleOverride } from "../../utils/types";
 
 interface SettingsPageProps {
   setGlobalStyleOverride: React.Dispatch<React.SetStateAction<StyleOverride>>;
@@ -28,7 +28,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
     setNickname(newNickname);
     setDarkMode(newDarkMode);
     setPlayerPlayAs(newPlayerPlayAs);
-    resetHistory(newBoardSize, newPlayerPlayAs);
+    resetHistory(newBoardSize);
     setBoardSize(newBoardSize);
     navigate(-1);
   };
