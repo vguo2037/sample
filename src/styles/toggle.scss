@@ -29,6 +29,7 @@
   .toggle-input {
     opacity: 0;
     cursor: pointer;
+    height: 100%;
   };  
 
   &:has(.toggle-input:checked) {

@@ -53,7 +53,9 @@ const GameCell = forwardRef<GameCellObject, GameCellProps>(({ row, col, id, disa
   };
 
   return (<>
-    <button className={`game-cell center-children ${bgColor} ${textColor}`} id={id}
+    <button
+      id={id} data-testid={isWinningCell ? "winning-cell" : ""}
+      className={`game-cell center-children ${bgColor} ${textColor}`}
       onClick={handleSelect} disabled={disabled || Boolean(cellMark) || gameMode === "ended"}
     >
       {displayCellMark(cellMark)}

@@ -92,8 +92,6 @@ form {
   content: attr(tooltip-text);
   position: absolute;
   padding: 0.25rem 0.5rem;
-  // left: 25%;
-  // top: 75%;
   top: -75%;
   left: 50%;
   -webkit-transform: translateX(-50%);
@@ -111,8 +109,10 @@ form {
   transition: 0.25s ease-out;
   font-size: small;
   pointer-events: none;
+  display: none;
 };
 
 [tooltip-text]:hover:after {
   opacity: 1;
+  display: block;
 };

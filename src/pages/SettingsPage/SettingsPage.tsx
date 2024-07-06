@@ -34,10 +34,6 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
   };
   const handleCancel = () => navigate(-1);
 
-  const changeNickname: ChangeEventHandler<HTMLInputElement> = (e) => {
-    e.preventDefault();
-    setNewNickname(e.target.value);
-  };
   const changeDarkMode: ChangeEventHandler<HTMLInputElement> = (e) => {
     setNewDarkMode(e.target.checked);
   };
@@ -52,7 +48,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
     <Form onSubmit={handleSave}>
       <Form.Group controlId="nickname">
         <Form.Label>Nickname</Form.Label>
-        <NicknameSetter {...{newNickname, setNewNickname, changeNickname}} />
+        <NicknameSetter newNickname={newNickname} setNewNickname={setNewNickname} />
       </Form.Group>
       <Form.Group controlId="playerMark">
         <p>Play as</p>

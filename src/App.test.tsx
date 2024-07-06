@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import App from './App'
 
-test('full app rendering & navigating', async () => {
+test('App rendering & navigating correctly', async () => {
   render(<App />)
   const user = userEvent.setup()
 

@@ -9,7 +9,7 @@ interface ToggleProps {
 };
 
 const Toggle: React.FC<ToggleProps> = ({ value, onChange, id }) => {
-  return (<div className="toggle-slider" id={id}>
+  return (<div className="toggle-slider" id={id} data-testid={`toggle-${id}`}>
     <Form.Control type="checkbox" className="toggle-input" checked={value} onChange={onChange} />
   </div>);
 };

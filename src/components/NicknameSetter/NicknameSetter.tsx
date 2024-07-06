@@ -5,17 +5,21 @@ import { requestRandomNicknames } from "../../utils";
 
 interface NicknameSetterProps {
   newNickname: string,
-  setNewNickname: React.Dispatch<React.SetStateAction<string>>,
-  changeNickname: ChangeEventHandler<HTMLInputElement>
+  setNewNickname: React.Dispatch<React.SetStateAction<string>>
 };
 
-const NicknameSetter: React.FC<NicknameSetterProps> = ({ newNickname, setNewNickname, changeNickname }) => {
+const NicknameSetter: React.FC<NicknameSetterProps> = ({ newNickname, setNewNickname }) => {
   const randomNicknameStash = useRef(new Array<string>());
   const [requestingInProgress, setRequestingInProgress] = useState<boolean>(false);
 
+  const handleNicknameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault();
+    setNewNickname(e.target.value);
+  };
+
   const fetchRandomNickname = async () => {
     setRequestingInProgress(true);
-    if (randomNicknameStash.current.length === 0) {
+    if (!randomNicknameStash.current || randomNicknameStash.current.length === 0) {
       randomNicknameStash.current = await requestRandomNicknames();
     };
 
@@ -24,7 +28,7 @@ const NicknameSetter: React.FC<NicknameSetterProps> = ({ newNickname, setNewNick
   };
 
   return (<div className="flex-row">
-    <Form.Control type="text" value={newNickname} onChange={changeNickname} />
+    <Form.Control type="text" aria-label="input-nickname" value={newNickname} onChange={handleNicknameChange} />
     <Button variant="link" size="lg" className="flex-row center-children icon-btn"
       onClick={fetchRandomNickname} disabled={requestingInProgress}
     >

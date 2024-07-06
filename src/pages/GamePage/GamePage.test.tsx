@@ -5,7 +5,6 @@ import { HashRouter } from 'react-router-dom'
 import { SettingsContext, GameStatusContext } from '../../utils';
 import type { GameStatus, Settings, GameMode } from '../../utils/types';
 import { createBoard } from '../../utils/contexts/gameStatus';
-import { noop } from '../../utils/gameControl';
 import { useState } from 'react';
 
 const MOCK_INITIAL_SCORE = 4;
@@ -27,14 +26,7 @@ const initialMockGameStatus = {
   npcDifficulty: 0,
   addScore: mockAddScore,
   resetScore: mockResetScore,
-  resetHistory: noop,
-  switchCurrentPlayer: noop,
-  handleCellSelect: noop,
-  undoMove: noop,
-  setGameMode: noop,
-  setGameOutcome: noop,
-  setNpcDifficulty: noop
-} as GameStatus;
+} as unknown as GameStatus;
 
 const TestRender = (
   { gameStatusOverride, settingsOverride }: {
@@ -63,9 +55,9 @@ describe("GamePage displaying correctly", () => {
     expect(screen.queryByText("Undo")).not.toBeInTheDocument();
     expect(screen.queryByText("turn")).not.toBeInTheDocument();
     
-    const gamePanel = screen.getByTestId("test-gamepanel")
-    expect(gamePanel).toBeInTheDocument();
-    expect(gamePanel).toHaveStyle(`height: 0px`);
+    const gamePanelWrapper = screen.getByTestId("test-gamepanel");
+    expect(gamePanelWrapper).toBeInTheDocument();
+    expect(gamePanelWrapper).toHaveStyle(`height: 0px`);
   });
 
   test('when mode === "multiplayer"', async () => {
@@ -75,9 +67,9 @@ describe("GamePage displaying correctly", () => {
     expect(screen.getByText("Undo")).toBeInTheDocument();
     expect(screen.getByText("Restart")).toBeInTheDocument();
     
-    const gamePanel = screen.getByTestId("test-gamepanel")
-    expect(gamePanel).toBeInTheDocument();
-    expect(gamePanel).not.toHaveStyle(`height: 0px`);
+    const gamePanelWrapper = screen.getByTestId("test-gamepanel")
+    expect(gamePanelWrapper).toBeInTheDocument();
+    expect(gamePanelWrapper).not.toHaveStyle(`height: 0px`);
   });
 
   test('when mode === "NPC"', async () => {
@@ -87,9 +79,9 @@ describe("GamePage displaying correctly", () => {
     expect(screen.getByText("Undo")).toBeInTheDocument();
     expect(screen.getByText("Restart")).toBeInTheDocument();
     
-    const gamePanel = screen.getByTestId("test-gamepanel")
-    expect(gamePanel).toBeInTheDocument();
-    expect(gamePanel).not.toHaveStyle(`height: 0px`);
+    const gamePanelWrapper = screen.getByTestId("test-gamepanel")
+    expect(gamePanelWrapper).toBeInTheDocument();
+    expect(gamePanelWrapper).not.toHaveStyle(`height: 0px`);
   });
 
   test('when mode === "ended"', async () => {
@@ -100,13 +92,13 @@ describe("GamePage displaying correctly", () => {
     expect(screen.queryByText("Undo")).not.toBeInTheDocument();
     expect(screen.queryByText("turn")).not.toBeInTheDocument();
     
-    const gamePanel = screen.getByTestId("test-gamepanel")
-    expect(gamePanel).toBeInTheDocument();
-    expect(gamePanel).not.toHaveStyle(`height: 0px`);
+    const gamePanelWrapper = screen.getByTestId("test-gamepanel")
+    expect(gamePanelWrapper).toBeInTheDocument();
+    expect(gamePanelWrapper).not.toHaveStyle(`height: 0px`);
   });
 });
 
-test("Automatic NPC turns are played correctly", async () => {
+test("GamePage manages automatic NPC turns correctly", async () => {
   act(() => {
     render(<TestRender
       gameStatusOverride={{ gameMode: "NPC", currentPlayer: "X" }}
@@ -123,7 +115,7 @@ test("Automatic NPC turns are played correctly", async () => {
   expect(screen.getByText("It's your (O) turn!")).toBeInTheDocument();
 });
 
-describe("Score changing functions are correctly called", () => {
+describe("GamePage manages score changing functions correctly", () => {
   test("for resetting score", async () => {
     render(<TestRender />, { wrapper: HashRouter });
 
