@@ -39,6 +39,12 @@ const GamePage = () => {
     if (gameMode === "NPC" && currentPlayer === npcPlayAs) makeNpcTurn();
   }, [currentPlayer, gameMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const undoDisabled = (
+    isNpcTurn ||
+    pastMoves.length === 0 ||
+    (gameMode === "NPC" && pastMoves.length === 1 && pastMoves[0].mark !== currentPlayer)
+  );
+
   return (<PageStyleWrapper>
     <header className="center-children">
       <p className="flex-row">{nickname}'s current score is: {score}
@@ -53,7 +59,7 @@ const GamePage = () => {
       { (gameMode === "none" || gameMode === "ended")
         ? <ModePicker />
         : <ButtonGroup>
-            <Button variant="primary" disabled={isNpcTurn || pastMoves.length===0} onClick={() => undoMove()}
+            <Button variant="primary" disabled={undoDisabled} onClick={() => undoMove()}
             >
               Undo
             </Button>

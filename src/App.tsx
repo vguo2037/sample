@@ -28,7 +28,6 @@ const App = () => {
     <SettingsContext.Provider value={settingsValues}>
       <GameStatusContext.Provider value={gameValues}>
         <GlobalStyleWrapper override={globalStyleOverride}>
-          {/* <MarkInputCursor /> */}
           <RouterProvider router={router} />
         </GlobalStyleWrapper>
       </GameStatusContext.Provider>

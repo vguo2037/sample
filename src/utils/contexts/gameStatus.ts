@@ -2,7 +2,7 @@ import { createContext, useEffect, useRef, useState } from "react";
 import type { GameMode, GameOutcome, PlayerMark, GameStatus, Board, CellMove, NPCDifficulty, WinType, BoardSize } from "../types";
 import { checkMoveOutcome, noop } from "../gameControl";
 
-const createBoard = (boardSize: BoardSize) => Array(boardSize).fill(Array(boardSize).fill(null));
+export const createBoard = (boardSize: BoardSize) => Array(boardSize).fill(Array(boardSize).fill(null));
 
 const emptyGameStatus: GameStatus = { 
   score: 0, addScore: noop, resetScore: noop,
@@ -51,10 +51,10 @@ export const useGameStatusValues = () => {
   const handleCellSelect = (move: CellMove) => {
     setBoardCell(move);
     pastMoves.current.push(move);
+    setLastActionIsUndo(false);
   };
   const resetHistory = (newBoardSize: BoardSize) => {
     setBoard(createBoard(newBoardSize));
-    setCurrentPlayer("X");
     pastMoves.current = [];
     setLastActionIsUndo(false);
     setGameOutcome("none");

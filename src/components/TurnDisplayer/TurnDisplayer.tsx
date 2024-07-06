@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { GameStatusContext, SettingsContext } from "../../utils";
-import { winningOutcome } from "../../utils/gameControl";
+import { reverseMark, winningOutcome } from "../../utils/gameControl";
 
 interface TurnDisplayerProps {
   isNpcTurn: boolean
@@ -24,8 +24,8 @@ const TurnDisplayer: React.FC<TurnDisplayerProps> = ({ isNpcTurn }) => {
   };
 
   if (gameMode !== "none") {
-    if (isNpcTurn) return <p>NPC ({currentPlayer}) is thinking…</p>;
-    else if (gameMode === "NPC") return <p>It's your ({currentPlayer}) turn!</p>
+    if (isNpcTurn) return <p>NPC ({reverseMark(playerPlayAs)}) is thinking…</p>;
+    else if (gameMode === "NPC") return <p>It's your ({playerPlayAs}) turn!</p>
     else return <p>It is Player {currentPlayer}'s turn!</p>;
   };
 

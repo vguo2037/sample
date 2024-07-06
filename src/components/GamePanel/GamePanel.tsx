@@ -47,6 +47,7 @@ const GamePanel: React.FC<GamePanelProps> = ({ disabled }) => {
 
   return (<motion.div
     className="game-grid-wrapper"
+    data-testid="test-gamepanel"
     // required prevent replays of mounting/unmounting animation on page changes
     initial={panelStyle} animate={panelStyle}
     transition={{ type: "tween" }}
