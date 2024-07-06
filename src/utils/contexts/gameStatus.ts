@@ -52,12 +52,13 @@ export const useGameStatusValues = () => {
     setBoardCell(move);
     pastMoves.current.push(move);
   };
-  const resetHistory = (newBoardSize: BoardSize, playerPlayAs: PlayerMark) => {
+  const resetHistory = (newBoardSize: BoardSize) => {
     setBoard(createBoard(newBoardSize));
-    setCurrentPlayer(playerPlayAs);
+    setCurrentPlayer("X");
     pastMoves.current = [];
     setLastActionIsUndo(false);
     setGameOutcome("none");
+    setGameMode("none");
     wins.current = [];
   };
 

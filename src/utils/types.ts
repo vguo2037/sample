@@ -30,7 +30,7 @@ export type GameStatus = {
   setGameOutcome: React.Dispatch<React.SetStateAction<GameOutcome>>,
   board: Board,
   handleCellSelect: (move: CellMove) => void,
-  resetHistory: (newBoardSize: BoardSize, playerPlayAs: PlayerMark) => void,
+  resetHistory: (newBoardSize: BoardSize) => void,
   pastMoves: Array<CellMove>,
   undoMove: () => void
   npcDifficulty: NPCDifficulty,
@@ -48,12 +48,10 @@ export type CellMove = CellCoords & {
 };
 
 export type GameStarter = ({
-  mode, gameStatusContext, difficulty, boardSize
+  mode, gameStatusContext, difficulty
 }: {
   mode: GameMode,
   difficulty?: NPCDifficulty,
-  boardSize: BoardSize,
-  playerPlayAs: PlayerMark,
   gameStatusContext: GameStatus
 }) => void;
 
