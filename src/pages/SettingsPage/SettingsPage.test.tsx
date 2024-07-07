@@ -6,6 +6,7 @@ import { SettingsContext, useSettingsValues } from '../../utils';
 import type { Settings, StyleOverride } from '../../utils/types';
 import { useEffect, useState } from 'react';
 import userEvent from '@testing-library/user-event';
+import { defaultSettingsValues } from '../../utils/contexts/settings';
 
 type ValueBroadcaster = (currentValue: any) => {};
 const broadcastStyleOverride: ValueBroadcaster = jest.fn() as ValueBroadcaster;
@@ -23,7 +24,7 @@ const TestRender = ({ broadcastStyleOverride }: {
 }) => {
   const [globalStyleOverride, setGlobalStyleOverride] = useState<StyleOverride>(undefined);
   
-  const settingsContext = useSettingsValues();
+  const settingsContext = useSettingsValues(defaultSettingsValues);
 
   useEffect(() => {
     broadcastSettings(settingsContext);

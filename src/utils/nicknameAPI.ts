@@ -9,18 +9,20 @@ export const requestRandomNicknames = async () => {
     const response = await fetch(ENDPOINT);
     const data = await response.json();
 
-    if (data.success) {
+    if (data?.contents?.names) {
       const randomNicknames = data?.contents?.names;
       
-      // as the external API will repeat outputted names on multiple calls, this avoids repeated sequences
+      // as the external API will repeat outputted names on multiple calls,
+      // this hopefully avoids repeated sequences
       shuffleArray(randomNicknames);
 
       return randomNicknames;
     }
-    else throw new Error("No authorisation to access API");
+    else throw new Error(data.error?.message);
 
   } catch (error: any) {
-    console.error(error?.message ?? "Unknown network error");
+    alert(error?.message ?? "Unknown network error");
+    console.error(error);
     return [];
   };
 };

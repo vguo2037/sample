@@ -11,9 +11,12 @@ export const winningOutcome = (playAs: PlayerMark, outcome: GameOutcome) => {
 };
 
 export const startGame: GameStarter = ({
-  mode, difficulty = 0,
-  gameStatusContext: { setGameMode, currentPlayer, switchCurrentPlayer, setNpcDifficulty }
+  mode, difficulty = 0, boardSize,
+  gameStatusContext: {
+    setGameMode, currentPlayer, switchCurrentPlayer, setNpcDifficulty, setGameOutcome, resetHistory
+  }
 }) => {
+  resetHistory(boardSize);
   setNpcDifficulty(difficulty);
   if (currentPlayer !== "X") switchCurrentPlayer();
   setGameMode(mode);

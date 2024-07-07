@@ -6,20 +6,17 @@ import type { NPCDifficulty } from "../../utils/types";
 
 const ModePicker = () => {
   const gameStatusContext = useContext(GameStatusContext);
-  const { resetHistory } = gameStatusContext;
   const { boardSize } = useContext(SettingsContext);
   const { nickname, playerPlayAs } = useContext(SettingsContext);
 
   const handleMultiplayerSelect = () => {
-    resetHistory(boardSize);
     startGame({
-      mode: "multiplayer", gameStatusContext
+      mode: "multiplayer", gameStatusContext, boardSize
     });
   };
   const handleNPCSelect = (difficulty: NPCDifficulty) => {
-    resetHistory(boardSize);
     startGame({
-      mode: "NPC", gameStatusContext, difficulty
+      mode: "NPC", gameStatusContext, difficulty, boardSize
     });
   };
 
