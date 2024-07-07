@@ -1,12 +1,12 @@
-import React, { ChangeEventHandler } from 'react';
+import React, { ChangeEventHandler } from "react";
 import "../../styles/toggle.scss";
-import { Form } from 'react-bootstrap';
+import { Form } from "react-bootstrap";
 
 interface ToggleProps {
   value?: boolean,
   onChange: ChangeEventHandler<HTMLInputElement>,
   id?: string
-};
+}
 
 const Toggle: React.FC<ToggleProps> = ({ value, onChange, id }) => {
   return (<div className="toggle-slider" id={id}>

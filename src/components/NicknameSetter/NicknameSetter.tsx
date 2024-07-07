@@ -6,7 +6,7 @@ import { requestRandomNicknames } from "../../utils";
 interface NicknameSetterProps {
   newNickname: string,
   setNewNickname: React.Dispatch<React.SetStateAction<string>>
-};
+}
 
 const NicknameSetter: React.FC<NicknameSetterProps> = ({ newNickname, setNewNickname }) => {
   const randomNicknameStash = useRef(new Array<string>());
@@ -21,11 +21,11 @@ const NicknameSetter: React.FC<NicknameSetterProps> = ({ newNickname, setNewNick
     setRequestingInProgress(true);
     if (!randomNicknameStash.current || randomNicknameStash.current.length === 0) {
       randomNicknameStash.current = await requestRandomNicknames();
-    };
+    }
 
     if (randomNicknameStash.current && randomNicknameStash.current.length > 0) {
       setNewNickname(randomNicknameStash.current.pop() as string);
-    };
+    }
 
     setRequestingInProgress(false);
   };

@@ -1,6 +1,6 @@
 import { Board, BoardSize, CellCoords, CellMove, CellWinnableCheckInputs, GameOutcome, GameOutcomeChecker, GameStarter, GameStatus, MoveOutcomeChecker, NPCStrategyInput, PlayerMark, WinType } from "./types";
 
-export const noop = () => {};
+export const noop = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
 
 export const reverseMark = (mark: PlayerMark) => mark === "X" ? "O" : "X";
 
@@ -13,7 +13,7 @@ export const winningOutcome = (playAs: PlayerMark, outcome: GameOutcome) => {
 export const startGame: GameStarter = ({
   mode, difficulty = 0, boardSize,
   gameStatusContext: {
-    setGameMode, currentPlayer, switchCurrentPlayer, setNpcDifficulty, setGameOutcome, resetHistory
+    setGameMode, currentPlayer, switchCurrentPlayer, setNpcDifficulty, resetHistory
   }
 }) => {
   resetHistory(boardSize);
@@ -27,11 +27,11 @@ const npcStrategyRandom = ({ board }: NPCStrategyInput) => {
 
   for (let i=0; i<board.length; i++) for (let j=0; j<board[0].length; j++) {
     if (!board[i][j]) emptyCells.push([i, j]);
-  };
+  }
 
   if (emptyCells.length === 0) {
     throw new Error("Error in computation. No valid moves can be made.");
-  };
+  }
   const chosenIndex = Math.floor(Math.random() * emptyCells.length);
 
   return emptyCells[chosenIndex];
@@ -69,8 +69,8 @@ export const getWinningCells = (wins: WinType[], lastMove: CellMove, boardSize: 
       case "secondDiagWin":
         for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: boardSize-1-i });
         break;
-    };
-  };
+    }
+  }
 
   return winningCells;
 };
@@ -84,7 +84,7 @@ const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
     const winnable: PlayerMark | null = checkCellWinnable({ board, row, col, playAs: npcPlayAs });
     if (winnable === npcPlayAs) return [row, col]; // win game
     if (winnable === reverseMark(npcPlayAs)) winnableOpponent = [row, col];
-  };
+  }
 
   // if opponent about to win, stop them
   if (winnableOpponent) return winnableOpponent;
@@ -111,7 +111,7 @@ export const makeNpcMove = (
       break;
     default:
       return;
-  };
+  }
   handleCellSelect({ row: chosenCell[0], col: chosenCell[1], mark: npcPlayAs });
 };
 
@@ -127,8 +127,8 @@ const checkDiagWin: MoveOutcomeChecker = ({ board, currentRow, currentCol, curre
     if (board[i][i] !== currentPlayer) {
       principalWin = false;
       break;
-    };
-  };
+    }
+  }
 
   // check secondary diagonal
   let secondaryWin = true;
@@ -136,8 +136,8 @@ const checkDiagWin: MoveOutcomeChecker = ({ board, currentRow, currentCol, curre
     if (board[i][board.length-1-i] !== currentPlayer) {
       secondaryWin = false;
       break;
-    };
-  };
+    }
+  }
 
   const wins: WinType[] = [];
   if (principalWin) wins.push("principDiagWin");
@@ -148,14 +148,14 @@ const checkDiagWin: MoveOutcomeChecker = ({ board, currentRow, currentCol, curre
 const checkRowWin: MoveOutcomeChecker = ({ board, currentPlayer, currentRow }) => {
   for (let col=0; col<board[0].length; col++) {
     if (board[currentRow][col] !== currentPlayer) return [];
-  };
+  }
   return ["rowWin"];
 };
 
 const checkColWin: MoveOutcomeChecker = ({ board, currentPlayer, currentCol }) => {
   for (let row=0; row<board.length; row++) {
     if (board[row][currentCol] !== currentPlayer) return [];
-  };
+  }
   return ["colWin"];
 };
 
@@ -175,7 +175,7 @@ export const checkMoveOutcome: GameOutcomeChecker = (board: Board, currentMove: 
 
   for (let i=0; i<board.length; i++) for (let j=0; j<board[0].length; j++) {
     if (!board[i][j]) return { gameOutcome: "none", wins: [] }; // game has not yet ended
-  };
+  }
 
   return { gameOutcome: "draw", wins: [] };
 };

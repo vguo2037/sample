@@ -1,12 +1,12 @@
-import { act, getByText, render, screen, waitFor } from '@testing-library/react'
-import '@testing-library/jest-dom'
+import React, { useState } from "react";
+import { act, render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import { HashRouter } from "react-router-dom"
 import GamePage from "./GamePage";
-import { HashRouter } from 'react-router-dom'
-import { SettingsContext, GameStatusContext } from '../../utils';
-import type { GameStatus, Settings, GameMode } from '../../utils/types';
-import { createBoard } from '../../utils/contexts/gameStatus';
-import { useState } from 'react';
-import { makeNpcMove } from '../../utils/gameControl';
+import { SettingsContext, GameStatusContext } from "../../utils";
+import type { GameStatus, Settings } from "../../utils/types";
+import { createBoard } from "../../utils/contexts/gameStatus";
+import { makeNpcMove } from "../../utils/gameControl";
 
 jest.mock("../../utils/gameControl", () => ({
   ...jest.requireActual("../../utils/gameControl"),
@@ -63,7 +63,7 @@ describe("GamePage displaying correctly", () => {
     
     const gamePanelWrapper = screen.getByTestId("test-gamepanel");
     expect(gamePanelWrapper).toBeInTheDocument();
-    expect(gamePanelWrapper).toHaveStyle(`height: 0px`);
+    expect(gamePanelWrapper).toHaveStyle("height: 0px");
   });
 
   test('when mode === "multiplayer"', async () => {
@@ -75,7 +75,7 @@ describe("GamePage displaying correctly", () => {
     
     const gamePanelWrapper = screen.getByTestId("test-gamepanel")
     expect(gamePanelWrapper).toBeInTheDocument();
-    expect(gamePanelWrapper).not.toHaveStyle(`height: 0px`);
+    expect(gamePanelWrapper).not.toHaveStyle("height: 0px");
   });
 
   test('when mode === "NPC"', async () => {
@@ -87,7 +87,7 @@ describe("GamePage displaying correctly", () => {
     
     const gamePanelWrapper = screen.getByTestId("test-gamepanel")
     expect(gamePanelWrapper).toBeInTheDocument();
-    expect(gamePanelWrapper).not.toHaveStyle(`height: 0px`);
+    expect(gamePanelWrapper).not.toHaveStyle("height: 0px");
   });
 
   test('when mode === "ended"', async () => {
@@ -100,7 +100,7 @@ describe("GamePage displaying correctly", () => {
     
     const gamePanelWrapper = screen.getByTestId("test-gamepanel")
     expect(gamePanelWrapper).toBeInTheDocument();
-    expect(gamePanelWrapper).not.toHaveStyle(`height: 0px`);
+    expect(gamePanelWrapper).not.toHaveStyle("height: 0px");
   });
 });
 

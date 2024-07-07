@@ -1,9 +1,9 @@
-import React, { useContext, useRef, useEffect, useCallback } from 'react';
+import React, { useContext, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { GameCell } from '..';
-import { GameStatusContext, SettingsContext } from '../../utils';
-import type { CellCoords, GameCellObject, WinType } from '../../utils/types';
-import { getWinningCells } from '../../utils/gameControl';
+import { GameCell } from "..";
+import { GameStatusContext, SettingsContext } from "../../utils";
+import type { CellCoords, GameCellObject, WinType } from "../../utils/types";
+import { getWinningCells } from "../../utils/gameControl";
 
 const GamePanel = () => {
   const { gameMode, gameOutcome, pastMoves, wins, currentPlayer } = useContext(GameStatusContext);
@@ -19,7 +19,7 @@ const GamePanel = () => {
   const disabled = isNpcTurn || gameMode === "ended";
 
   useEffect(() => {
-    if (gameOutcome === 'oWin' || gameOutcome === "xWin") {
+    if (gameOutcome === "oWin" || gameOutcome === "xWin") {
       const lastMove = pastMoves[pastMoves.length - 1];
       winningCells.current = getWinningCells(wins as WinType[], lastMove, boardSize);
     }

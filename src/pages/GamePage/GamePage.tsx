@@ -44,7 +44,7 @@ const GamePage = () => {
 
   return (<PageStyleWrapper>
     <header className="center-children">
-      <p className="flex-row">{nickname}'s current score is: {score}
+      <p className="flex-row">{nickname}&apos;s current score is: {score}
         <span><Button variant="secondary" onClick={() => resetScore()}>Reset</Button></span>
       </p>
       { gameMode !== "none" && <TurnDisplayer /> }

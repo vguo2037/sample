@@ -1,9 +1,9 @@
-import React from 'react';
-import { motion } from 'framer-motion'; 
+import React from "react";
+import { motion } from "framer-motion"; 
 
 interface PageStyleWrapperProps {
   children: React.ReactNode
-};
+}
 
 const PageStyleWrapper: React.FC<PageStyleWrapperProps> = ({ children }) => {
   return <>

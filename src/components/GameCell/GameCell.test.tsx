@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { act, render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import GameCell from './GameCell'
-import { GameStatusContext, SettingsContext } from '../../utils';
-import type { GameCellObject, GameStatus, Settings } from '../../utils/types';
-import { createBoard } from '../../utils/contexts/gameStatus';
+import React, { useEffect, useRef } from "react";
+import { act, render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import GameCell from "./GameCell"
+import { GameStatusContext, SettingsContext } from "../../utils";
+import type { GameCellObject, GameStatus, Settings } from "../../utils/types";
+import { createBoard } from "../../utils/contexts/gameStatus";
 
 const mockSwitchCurrentPlayer = jest.fn();
 const mockHandleCellSelect = jest.fn();
@@ -27,7 +27,7 @@ jest.mock("react-icons/ri", () => ({
   "RiRadioButtonFill": () => <span>RiRadioButtonFill</span>
 }));
 
-describe('GameCell rendering correctly', () => {
+describe("GameCell rendering correctly", () => {
   test("During light mode", async () => {
     render(<>
       <SettingsContext.Provider value={{ darkMode: false } as Settings}>
@@ -150,7 +150,7 @@ test("GameCell handles being selected as winning cell correctly", async () => {
     return <>
       <GameStatusContext.Provider value={{...initialMockGameStatus, board: [["O"]]}}>
         <GameCell disabled={false}
-          row={0} col={0} id={`cell-0`} ref={obj => cellRef.current = obj} 
+          row={0} col={0} id={"cell-0"} ref={obj => cellRef.current = obj} 
         />
       </GameStatusContext.Provider>
     </>

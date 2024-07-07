@@ -41,7 +41,7 @@ export const useGameStatusValues = (initialGS: GameStatusValues) => {
   const resetScore = () => {
     if (window.confirm("Are you sure you want to reset your score? There is no undoing this action!")) {
       setScore(0);
-    };
+    }
   };
 
   const switchCurrentPlayer = () => {
@@ -76,7 +76,7 @@ export const useGameStatusValues = (initialGS: GameStatusValues) => {
     if (lastActionIsUndo) {
       setLastActionIsUndo(false);
       return;
-    };
+    }
 
     const lastMove = pastMoves.current[pastMoves.current.length-1];
     const { gameOutcome, wins: moveWins } = checkMoveOutcome(board, lastMove);
@@ -86,7 +86,7 @@ export const useGameStatusValues = (initialGS: GameStatusValues) => {
       setGameOutcome(gameOutcome);
     } else {
       switchCurrentPlayer();
-    };
+    }
   }, [board]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const undoMove = () => {
@@ -104,7 +104,7 @@ export const useGameStatusValues = (initialGS: GameStatusValues) => {
     if (gameMode === "NPC" && pastMoves.current.length !== 0) {
       const lastPlayerMove = pastMoves.current.pop() as CellMove;
       setBoardCell({ row: lastPlayerMove.row, col: lastPlayerMove.col, mark: null });
-    };
+    }
   };
 
   return {

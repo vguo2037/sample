@@ -1,14 +1,15 @@
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom'
-import App from './App'
+import React from "react";
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import "@testing-library/jest-dom"
+import App from "./App"
 
-test('App rendering & navigating correctly', async () => {
+test("App rendering & navigating correctly", async () => {
   render(<App />)
   const user = userEvent.setup()
 
   const testOneNavAttempt = async (clickedText: RegExp, expectedText: RegExp) => {
-    const navButton = screen.getByRole('button', { name: clickedText });
+    const navButton = screen.getByRole("button", { name: clickedText });
     await user.click(navButton);
     expect(screen.getByText(expectedText)).toBeInTheDocument();
   };

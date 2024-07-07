@@ -1,10 +1,11 @@
-import { act, render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import ModePicker from './ModePicker'
-import { SettingsContext } from '../../utils';
-import type { GameStatus, Settings } from '../../utils/types';
-import { createBoard, GameStatusContext } from '../../utils/contexts/gameStatus';
-import { startGame } from '../../utils/gameControl';
+import React from "react";
+import { act, render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import ModePicker from "./ModePicker"
+import { SettingsContext } from "../../utils";
+import type { GameStatus, Settings } from "../../utils/types";
+import { createBoard, GameStatusContext } from "../../utils/contexts/gameStatus";
+import { startGame } from "../../utils/gameControl";
 
 jest.mock("../../utils/gameControl", () => ({
   startGame: jest.fn()

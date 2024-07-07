@@ -1,8 +1,8 @@
-import { act, render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import NicknameSetter from './NicknameSetter'
-import { useState } from 'react';
-import { requestRandomNicknames } from '../../utils/nicknameAPI';
+import React, { useState } from "react";
+import { act, render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import NicknameSetter from "./NicknameSetter"
+import { requestRandomNicknames } from "../../utils/nicknameAPI";
 
 jest.mock("../../utils/nicknameAPI", () => ({
   requestRandomNicknames: jest.fn()
@@ -16,7 +16,7 @@ const TestRender = () => {
   return <NicknameSetter newNickname={newNickname} setNewNickname={setNewNickname} />;
 };
 
-test('NicknameSetter renders correctly', async () => {
+test("NicknameSetter renders correctly", async () => {
   render(<TestRender />);
 
   expect(screen.getByTestId("form-nickname")).toBeInTheDocument();

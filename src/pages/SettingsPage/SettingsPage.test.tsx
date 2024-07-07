@@ -1,14 +1,14 @@
-import { act, render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
+import React, { useEffect, useState } from "react";
+import { act, render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
 import SettingsPage from "./SettingsPage";
-import { HashRouter } from 'react-router-dom'
-import { SettingsContext, useSettingsValues } from '../../utils';
-import type { Settings, StyleOverride } from '../../utils/types';
-import { useEffect, useState } from 'react';
-import userEvent from '@testing-library/user-event';
-import { defaultSettingsValues } from '../../utils/contexts/settings';
+import { HashRouter } from "react-router-dom"
+import { SettingsContext, useSettingsValues } from "../../utils";
+import type { Settings, StyleOverride } from "../../utils/types";
+import userEvent from "@testing-library/user-event";
+import { defaultSettingsValues } from "../../utils/contexts/settings";
 
-type ValueBroadcaster = (currentValue: any) => {};
+type ValueBroadcaster = (currentValue: unknown) => void;
 const broadcastStyleOverride: ValueBroadcaster = jest.fn() as ValueBroadcaster;
 const broadcastSettings: ValueBroadcaster = jest.fn() as ValueBroadcaster;
 
@@ -110,16 +110,16 @@ describe("SettingsPage handles context values correctly", () => {
         expect(o).toHaveProperty("checked", true);
       } else {
         expect(o).toHaveProperty("checked", false);
-      };
-    };
+      }
+    }
 
     for (const o of boardSizeOptions) {
       if (Number.parseInt(o.value) === 3) {
         expect(o).toHaveProperty("checked", true);
       } else {
         expect(o).toHaveProperty("checked", false);
-      };
-    };
+      }
+    }
 
     expect(darkModeToggle).toHaveProperty("checked", false);
   });
@@ -131,11 +131,11 @@ describe("SettingsPage handles context values correctly", () => {
 
         for (const o of playerMarkOptions) {
           if (o.value === updatedMockSettings.playerPlayAs) await user.click(o);
-        };
+        }
 
         for (const o of boardSizeOptions) {
           if (Number.parseInt(o.value) === updatedMockSettings.boardSize) await user.click(o);
-        };
+        }
 
         await user.click(darkModeToggle);
       });
@@ -149,16 +149,16 @@ describe("SettingsPage handles context values correctly", () => {
           expect(o).toHaveProperty("checked", true);
         } else {
           expect(o).toHaveProperty("checked", false);
-        };
-      };
+        }
+      }
   
       for (const o of boardSizeOptions) {
         if (Number.parseInt(o.value) === 5) {
           expect(o).toHaveProperty("checked", true);
         } else {
           expect(o).toHaveProperty("checked", false);
-        };
-      };
+        }
+      }
   
       expect(darkModeToggle).toHaveProperty("checked", true);
     });
@@ -166,7 +166,7 @@ describe("SettingsPage handles context values correctly", () => {
     test("Saves context values when Save is clicked", async () => {
       expect(broadcastSettings).toHaveBeenCalledTimes(1); // once for initial load
 
-      const saveButton = screen.getByRole('button', { name: "Save" });
+      const saveButton = screen.getByRole("button", { name: "Save" });
       await act(async () => { await user.click(saveButton); });
       expect(broadcastSettings).toHaveBeenCalledTimes(2);
       expect(broadcastSettings).toHaveBeenLastCalledWith(
@@ -177,7 +177,7 @@ describe("SettingsPage handles context values correctly", () => {
     test("Discards updates when Back is clicked", async () => {
       expect(broadcastSettings).toHaveBeenCalledTimes(1); // once for initial load
 
-      const backButton = screen.getByRole('button', { name: "Back" });
+      const backButton = screen.getByRole("button", { name: "Back" });
       await act(async () => { await user.click(backButton); });
       expect(broadcastSettings).toHaveBeenCalledTimes(1);
     });

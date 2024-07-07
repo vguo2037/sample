@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import type { StyleOverride } from './utils/types';
-import './styles/App.scss';
-import { createHashRouter, RouterProvider } from 'react-router-dom';
+import React, { useState } from "react";
+import type { StyleOverride } from "./utils/types";
+import "./styles/App.scss";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import { SettingsContext, useSettingsValues, GameStatusContext, useGameStatusValues, defaultSettingsValues, defaultGameStatus } from "./utils";
-import { GamePage, LandingPage, SettingsPage } from './pages';
-import { GlobalStyleWrapper } from './components';
+import { GamePage, LandingPage, SettingsPage } from "./pages";
+import { GlobalStyleWrapper } from "./components";
 
 const App = () => {
   const settingsValues = useSettingsValues(defaultSettingsValues);

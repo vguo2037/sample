@@ -7,7 +7,7 @@ import { BoardSize, type PlayerMark, type StyleOverride } from "../../utils/type
 
 interface SettingsPageProps {
   setGlobalStyleOverride: React.Dispatch<React.SetStateAction<StyleOverride>>;
-};
+}
 
 const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) => {
   const navigate = useNavigate();

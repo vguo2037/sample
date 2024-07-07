@@ -1,6 +1,7 @@
-import { act, render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import Toggle from './Toggle'
+import React from "react";
+import { act, render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import Toggle from "./Toggle"
 
 const onToggleChange = jest.fn();
 

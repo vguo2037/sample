@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import TurnDisplayer from './TurnDisplayer'
-import { GameStatusContext, SettingsContext } from '../../utils';
-import type { GameStatus, Settings } from '../../utils/types';
+import React from "react";
+import { render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import TurnDisplayer from "./TurnDisplayer"
+import { GameStatusContext, SettingsContext } from "../../utils";
+import type { GameStatus, Settings } from "../../utils/types";
 
 const TestRender = ({ settingsOverride, gameStatusOverride }: {
   settingsOverride?: Partial<Settings>,

@@ -1,13 +1,13 @@
-import '@testing-library/jest-dom';
-import { checkMoveOutcome, getWinningCells, makeNpcMove, startGame } from './gameControl';
-import { act, render } from '@testing-library/react';
-import { createBoard, GameStatusContext, useGameStatusValues } from './contexts/gameStatus';
-import type { Board, BoardSize, CellMove, GameStatus, GameStatusValues, NPCDifficulty, WinType } from './types';
-import { useEffect } from 'react';
+import React, { useEffect } from "react";
+import "@testing-library/jest-dom";
+import { checkMoveOutcome, getWinningCells, makeNpcMove, startGame } from "./gameControl";
+import { act, render } from "@testing-library/react";
+import { createBoard, GameStatusContext, useGameStatusValues } from "./contexts/gameStatus";
+import type { Board, BoardSize, CellMove, GameStatus, GameStatusValues, NPCDifficulty, WinType } from "./types";
 
 // noop, reverseMark, winningOutcome not tested as they are trivial
 
-test('startGame should change game settings correctly', async () => {
+test("startGame should change game settings correctly", async () => {
   const DEFAULT_SIZE = 3;
   const initialMockGameStatus: GameStatusValues = {
     gameMode: "ended",
@@ -58,12 +58,12 @@ test('startGame should change game settings correctly', async () => {
   expect(gameStatusContext).toMatchObject(updatedMockGameStatus);
 });
 
-describe('getWinningCells should return the right winning cells for a move', () => {
+describe("getWinningCells should return the right winning cells for a move", () => {
   const boardSize = 5;
   const lastMove: CellMove = { row: 2, col: 2, mark: "X" };
   
-  test('when it made a row win', () => {
-    const wins: WinType[] = ['rowWin'];
+  test("when it made a row win", () => {
+    const wins: WinType[] = ["rowWin"];
     const winningCells = getWinningCells(wins, lastMove, boardSize);
 
     expect(winningCells).toEqual(expect.arrayContaining([
@@ -75,8 +75,8 @@ describe('getWinningCells should return the right winning cells for a move', () 
     ]));
   });
 
-  test('when it made a column win', () => {
-    const wins: WinType[] = ['colWin'];
+  test("when it made a column win", () => {
+    const wins: WinType[] = ["colWin"];
     const winningCells = getWinningCells(wins, lastMove, boardSize);
 
     expect(winningCells).toEqual(expect.arrayContaining([
@@ -88,8 +88,8 @@ describe('getWinningCells should return the right winning cells for a move', () 
     ]));
   });
 
-  test('when it made a principal diagonal win', () => {
-    const wins: WinType[] = ['principDiagWin'];
+  test("when it made a principal diagonal win", () => {
+    const wins: WinType[] = ["principDiagWin"];
     const winningCells = getWinningCells(wins, lastMove, boardSize);
 
     expect(winningCells).toEqual(expect.arrayContaining([
@@ -101,8 +101,8 @@ describe('getWinningCells should return the right winning cells for a move', () 
     ]));
   });
 
-  test('when it made a secondary diagonal win', () => {
-    const wins: WinType[] = ['secondDiagWin'];
+  test("when it made a secondary diagonal win", () => {
+    const wins: WinType[] = ["secondDiagWin"];
     const winningCells = getWinningCells(wins, lastMove, boardSize);
 
     expect(winningCells).toEqual(expect.arrayContaining([
@@ -114,7 +114,7 @@ describe('getWinningCells should return the right winning cells for a move', () 
     ]));
   });
 
-  test('when it made multiple types of wins', () => {
+  test("when it made multiple types of wins", () => {
     const wins: WinType[] = ["rowWin", "colWin", "principDiagWin", "secondDiagWin"];
     const winningCells = getWinningCells(wins, lastMove, boardSize);
 
@@ -168,7 +168,7 @@ describe("makeNpcMove", () => {
       expect(handleCellSelect).toHaveBeenLastCalledWith(expectedMove);
 
       handleCellSelect.mockClear();
-    };
+    }
   };
   
   test("should make valid moves for difficulty 1 (Easy)", async () => {
@@ -180,22 +180,22 @@ describe("makeNpcMove", () => {
   });
 
   // TODO
-  describe("should play for wins for difficulty 2 (Hard)", () => {
-    test("(play for row wins)", async () => {});
-    test("(play for column wins)", async () => {});
-    test("(play for primary diagonal wins)", async () => {});
-    test("(play for secondary diagonal wins)", async () => {});
-  });
+  // describe("should play for wins for difficulty 2 (Hard)", () => {
+  //   test("(play for row wins)", async () => {});
+  //   test("(play for column wins)", async () => {});
+  //   test("(play for primary diagonal wins)", async () => {});
+  //   test("(play for secondary diagonal wins)", async () => {});
+  // });
 });
 
-describe('checkMoveOutcome', () => {
+describe("checkMoveOutcome", () => {
   test("should detect row xWins", async () => {
     const board: Board = [
-      ['X', 'X', 'X'],
-      ['O', 'O', null],
+      ["X", "X", "X"],
+      ["O", "O", null],
       [null, null, null],
     ];
-    const currentMove: CellMove = { row: 0, col: 2, mark: 'X' };
+    const currentMove: CellMove = { row: 0, col: 2, mark: "X" };
 
     const result = checkMoveOutcome(board, currentMove);
     expect(result).toEqual(
@@ -204,11 +204,11 @@ describe('checkMoveOutcome', () => {
   });
   test("should detect column xWins", async () => {
     const board: Board = [
-      ['X', null, 'X'],
-      ['O', 'O', 'X'],
-      [null, null, 'X'],
+      ["X", null, "X"],
+      ["O", "O", "X"],
+      [null, null, "X"],
     ];
-    const currentMove: CellMove = { row: 0, col: 2, mark: 'X' };
+    const currentMove: CellMove = { row: 0, col: 2, mark: "X" };
 
     const result = checkMoveOutcome(board, currentMove);
     expect(result).toEqual(
@@ -217,11 +217,11 @@ describe('checkMoveOutcome', () => {
   });
   test("should detect primary diagonal xWins", async () => {
     const board: Board = [
-      ['X', null, 'X'],
-      ['O', 'X', 'O'],
-      [null, null, 'X'],
+      ["X", null, "X"],
+      ["O", "X", "O"],
+      [null, null, "X"],
     ];
-    const currentMove: CellMove = { row: 2, col: 2, mark: 'X' };
+    const currentMove: CellMove = { row: 2, col: 2, mark: "X" };
 
     const result = checkMoveOutcome(board, currentMove);
     expect(result).toEqual(
@@ -230,11 +230,11 @@ describe('checkMoveOutcome', () => {
   });
   test("should detect secondary diagonal xWins", async () => {
     const board: Board = [
-      ['O', null, 'X'],
-      ['O', 'X', 'O'],
-      ["X", null, 'X'],
+      ["O", null, "X"],
+      ["O", "X", "O"],
+      ["X", null, "X"],
     ];
-    const currentMove: CellMove = { row: 0, col: 2, mark: 'X' };
+    const currentMove: CellMove = { row: 0, col: 2, mark: "X" };
 
     const result = checkMoveOutcome(board, currentMove);
     expect(result).toEqual(
@@ -249,7 +249,7 @@ describe('checkMoveOutcome', () => {
       [null, "X", "X", "X", null],
       ["X", null, "X", null, "X"],
     ];
-    const currentMove: CellMove = { row: 2, col: 2, mark: 'X' };
+    const currentMove: CellMove = { row: 2, col: 2, mark: "X" };
 
     const result = checkMoveOutcome(board, currentMove);
     expect(result).toEqual(
@@ -267,7 +267,7 @@ describe('checkMoveOutcome', () => {
       [null, "O", "O", "O", null],
       ["O", null, "O", null, "O"],
     ];
-    const currentMove: CellMove = { row: 2, col: 2, mark: 'O' };
+    const currentMove: CellMove = { row: 2, col: 2, mark: "O" };
 
     const result = checkMoveOutcome(board, currentMove);
     expect(result).toEqual(
@@ -278,31 +278,31 @@ describe('checkMoveOutcome', () => {
     );
   });
 
-  test('should return draw when the board is full with no winner', () => {
+  test("should return draw when the board is full with no winner", () => {
     const board: Board = [
-      ['X', 'O', 'X'],
-      ['X', 'O', 'O'],
-      ['O', 'X', 'X'],
+      ["X", "O", "X"],
+      ["X", "O", "O"],
+      ["O", "X", "X"],
     ];
-    const currentMove: CellMove = { row: 2, col: 2, mark: 'X' };
+    const currentMove: CellMove = { row: 2, col: 2, mark: "X" };
 
     const result = checkMoveOutcome(board, currentMove);
     expect(result).toEqual(
-      expect.objectContaining({ gameOutcome: 'draw', wins: [], })
+      expect.objectContaining({ gameOutcome: "draw", wins: [], })
     );
   });
 
-  test('should return none when the game is not yet finished', () => {
+  test("should return none when the game is not yet finished", () => {
     const board: Board = [
-      ['X', 'O', 'X'],
-      ['X', 'O', null],
-      ['O', null, 'X'],
+      ["X", "O", "X"],
+      ["X", "O", null],
+      ["O", null, "X"],
     ];
-    const currentMove: CellMove = { row: 1, col: 2, mark: 'O' };
+    const currentMove: CellMove = { row: 1, col: 2, mark: "O" };
 
     const result = checkMoveOutcome(board, currentMove);
     expect(result).toEqual(
-      expect.objectContaining({ gameOutcome: 'none', wins: [] })
+      expect.objectContaining({ gameOutcome: "none", wins: [] })
     );
   });
 });

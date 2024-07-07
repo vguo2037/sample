@@ -1,10 +1,11 @@
-import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import GlobalStyleWrapper from './GlobalStyleWrapper'
-import { SettingsContext } from '../../utils';
-import type { Settings } from '../../utils/types';
+import React from "react";
+import { render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import GlobalStyleWrapper from "./GlobalStyleWrapper"
+import { SettingsContext } from "../../utils";
+import type { Settings } from "../../utils/types";
 
-describe('GlobalStyleWrapper renders correctly', () => {
+describe("GlobalStyleWrapper renders correctly", () => {
   test("During light mode", async () => {
     render(<>
       <SettingsContext.Provider value={{ darkMode: false } as Settings}>
@@ -33,7 +34,7 @@ describe('GlobalStyleWrapper renders correctly', () => {
   });
 });
 
-test('GlobalStyleWrapper responds to styleOverride correctly', () => {
+test("GlobalStyleWrapper responds to styleOverride correctly", () => {
   render(<>
     <SettingsContext.Provider value={{ darkMode: false } as Settings}>
       <GlobalStyleWrapper override={{ darkMode: true }}>

@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import { AnimatePresence } from 'framer-motion'; 
-import { SettingsContext } from '../../utils';
+import React, { useContext } from "react";
+import { AnimatePresence } from "framer-motion"; 
+import { SettingsContext } from "../../utils";
 
 interface StyleWrapperProps {
   children: React.ReactNode,
-  override?: { [key:string]: any }
-};
+  override?: { [key:string]: unknown }
+}
 
 const GlobalStyleWrapper: React.FC<StyleWrapperProps> = ({ children, override }) => {
   const settingsContext = useContext(SettingsContext);

@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { act, render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import GamePanel from './GamePanel'
-import { GameStatusContext, SettingsContext } from '../../utils';
-import type { BoardSize, GameStatus, Settings } from '../../utils/types';
-import { createBoard } from '../../utils/contexts/gameStatus';
+import React from "react";
+import { act, render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import GamePanel from "./GamePanel"
+import { GameStatusContext, SettingsContext } from "../../utils";
+import type { BoardSize, GameStatus, Settings } from "../../utils/types";
+import { createBoard } from "../../utils/contexts/gameStatus";
 
 const initialMockGameStatus = {
   pastMoves: [],

@@ -12,20 +12,21 @@ const TurnDisplayer = () => {
     switch (gameOutcome) {
       case "xWin":
       case "oWin":
+        // eslint-disable-next-line no-case-declarations
         const playerWins = winningOutcome(playerPlayAs, gameOutcome);
         return <p>{nickname} {playerWins ? "win" : "lose"}s!</p>;
       case "draw":
-        return <p>It's a draw!</p>;
+        return <p>It&apos;s a draw!</p>;
       default:
         return null;
     }
-  };
+  }
 
   if (gameMode !== "none") {
     if (isNpcTurn) return <p>NPC ({reverseMark(playerPlayAs)}) is thinking…</p>;
-    else if (gameMode === "NPC") return <p>It's your ({playerPlayAs}) turn!</p>
-    else return <p>It is Player {currentPlayer}'s turn!</p>;
-  };
+    else if (gameMode === "NPC") return <p>It&apos;s your ({playerPlayAs}) turn!</p>
+    else return <p>It is Player {currentPlayer}&apos;s turn!</p>;
+  }
 
   return null;
 };

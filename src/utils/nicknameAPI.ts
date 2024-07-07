@@ -1,6 +1,6 @@
 const ENDPOINT = "https://api.fungenerators.com/name/generate?category=alien&limit=25";
 
-const shuffleArray = (array: Array<any>) => {
+const shuffleArray = (array: Array<unknown>) => {
   array.sort(() => 0.5 - Math.random());
 };
 
@@ -20,9 +20,9 @@ export const requestRandomNicknames = async () => {
     }
     else throw new Error(data.error?.message);
 
-  } catch (error: any) {
+  } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
     alert(error?.message ?? "Unknown network error");
     console.error(error);
     return [];
-  };
+  }
 };
