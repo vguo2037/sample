@@ -22,7 +22,7 @@ const TestRender = ({ boardSize, gameStatusOverride }: {
   return (<>
     <SettingsContext.Provider value={{ boardSize } as Settings}>
       <GameStatusContext.Provider value={{...initialMockGameStatus, ...gameStatusOverride, board: createBoard(boardSize)}}>
-        <GamePanel disabled={false} />
+        <GamePanel />
       </GameStatusContext.Provider>
     </SettingsContext.Provider>
   </>);

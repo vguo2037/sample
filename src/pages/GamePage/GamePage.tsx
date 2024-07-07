@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import "../../styles/gamePanel.scss";
 import { useNavigate } from "react-router-dom";
 import { Button, ButtonGroup } from "react-bootstrap";
@@ -17,7 +17,7 @@ const GamePage = () => {
     currentPlayer
   } = gameStatusContext;
   const { nickname, playerPlayAs } = useContext(SettingsContext);
-  const [isNpcTurn, setIsNpcTurn] = useState<boolean>(false);
+  const isNpcTurn = gameMode === "NPC" && currentPlayer !== playerPlayAs;
 
   useEffect(() => {
     if (winningOutcome(playerPlayAs, gameOutcome)) addScore();
@@ -27,13 +27,10 @@ const GamePage = () => {
     const npcPlayAs = reverseMark(playerPlayAs);
 
     const makeNpcTurn = async () => {
-      setIsNpcTurn(true);
-
       const delayTime = Math.random() * 1000 + 500;
       await new Promise(res => setTimeout(res, delayTime)); // delay for realism
 
       makeNpcMove(gameStatusContext, npcPlayAs);
-      setIsNpcTurn(false);
     };
 
     if (gameMode === "NPC" && currentPlayer === npcPlayAs) makeNpcTurn();
@@ -50,10 +47,10 @@ const GamePage = () => {
       <p className="flex-row">{nickname}'s current score is: {score}
         <span><Button variant="secondary" onClick={() => resetScore()}>Reset</Button></span>
       </p>
-      { gameMode !== "none" && <TurnDisplayer isNpcTurn={isNpcTurn} /> }
+      { gameMode !== "none" && <TurnDisplayer /> }
     </header>
 
-    <GamePanel disabled={isNpcTurn || gameMode === "ended"} />
+    <GamePanel />
 
     <footer className="center-children">
       { (gameMode === "none" || gameMode === "ended")

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { GameStatusContext, SettingsContext } from "../../utils";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
 import { NicknameSetter, PageStyleWrapper, Toggle } from "../../components";
-import type { StyleOverride } from "../../utils/types";
+import { BoardSize, type PlayerMark, type StyleOverride } from "../../utils/types";
 
 interface SettingsPageProps {
   setGlobalStyleOverride: React.Dispatch<React.SetStateAction<StyleOverride>>;
@@ -19,10 +19,10 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
   } = useContext(SettingsContext);
   const { resetHistory } = useContext(GameStatusContext);
 
-  const [newNickname, setNewNickname] = useState(nickname);
-  const [newDarkMode, setNewDarkMode] = useState(darkMode);
-  const [newPlayerPlayAs, setNewPlayerPlayAs] = useState(playerPlayAs);
-  const [newBoardSize, setNewBoardSize] = useState(boardSize);
+  const [newNickname, setNewNickname] = useState<string>(nickname);
+  const [newDarkMode, setNewDarkMode] = useState<boolean>(darkMode);
+  const [newPlayerPlayAs, setNewPlayerPlayAs] = useState<PlayerMark>(playerPlayAs);
+  const [newBoardSize, setNewBoardSize] = useState<BoardSize>(boardSize);
 
   const handleSave = () => {
     setNickname(newNickname);
@@ -34,8 +34,18 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
   };
   const handleCancel = () => navigate(-1);
 
-  const changeDarkMode: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleChangeDarkMode: ChangeEventHandler<HTMLInputElement> = (e) => {
     setNewDarkMode(e.target.checked);
+  };
+
+  const handleChangePlayerMark: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const newPlayerMark = e.target.value as PlayerMark;
+    setNewPlayerPlayAs(newPlayerMark);
+  };
+
+  const handleChangeBoardSize: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const newBoardSize = Number.parseInt(e.target.value) as BoardSize;
+    setNewBoardSize(newBoardSize);
   };
 
   useEffect(() => {
@@ -50,35 +60,35 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
         <Form.Label>Nickname</Form.Label>
         <NicknameSetter newNickname={newNickname} setNewNickname={setNewNickname} />
       </Form.Group>
-      <Form.Group controlId="playerMark">
+      <Form.Group controlId="playerMark" data-testid="form-playerMark">
         <p>Play as</p>
-        <Form.Check
+        <Form.Check value="X"
           type="radio" label="Player 1 (X)" name="playAsRadio" id="playAsRadio-X"
-          checked={newPlayerPlayAs === "X"} onChange={() => setNewPlayerPlayAs("X")}
+          checked={newPlayerPlayAs === "X"} onChange={handleChangePlayerMark}
         />
-        <Form.Check
+        <Form.Check value="O"
           type="radio" label="Player 2 (O)" name="playAsRadio" id="playAsRadio-O"
-          checked={newPlayerPlayAs === "O"} onChange={() => setNewPlayerPlayAs("O")}
+          checked={newPlayerPlayAs === "O"} onChange={handleChangePlayerMark}
         />
       </Form.Group>
-      <Form.Group controlId="boardSize">
+      <Form.Group controlId="boardSize" data-testid="form-boardSize">
         <p>Board size</p>
-        <Form.Check
+        <Form.Check value={3}
           type="radio" label="3" name="boardSizeRadio" id="boardSizeRadio-3"
-          checked={newBoardSize === 3} onChange={() => setNewBoardSize(3)}
+          checked={newBoardSize === 3} onChange={handleChangeBoardSize}
         />
-        <Form.Check
+        <Form.Check value={5}
           type="radio" label="5" name="boardSizeRadio" id="boardSizeRadio-5"
-          checked={newBoardSize === 5} onChange={() => setNewBoardSize(5)}
+          checked={newBoardSize === 5} onChange={handleChangeBoardSize}
         />
-        <Form.Check
-          type="radio" label="7" name="boardSizeRadio" id="boardSizeRadio-3"
-          checked={newBoardSize === 7} onChange={() => setNewBoardSize(7)}
+        <Form.Check value={7}
+          type="radio" label="7" name="boardSizeRadio" id="boardSizeRadio-7"
+          checked={newBoardSize === 7} onChange={handleChangeBoardSize}
         />
       </Form.Group>
-      <Form.Group controlId="darkMode" className="flex-row horizontal-group">
+      <Form.Group controlId="darkMode" className="flex-row horizontal-group" data-testid="form-darkMode">
         <Form.Label>Dark mode?</Form.Label>
-        <Toggle value={newDarkMode} onChange={changeDarkMode} id="dark-mode-toggle" />
+        <Toggle value={newDarkMode} onChange={handleChangeDarkMode} id="input-dark-mode" />
       </Form.Group>
     </Form>
     <ButtonGroup>

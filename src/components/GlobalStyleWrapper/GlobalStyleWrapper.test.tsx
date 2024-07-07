@@ -32,3 +32,17 @@ describe('GlobalStyleWrapper renders correctly', () => {
     expect(globalStyleWrapper).toHaveClass("text-light");
   });
 });
+
+test('GlobalStyleWrapper responds to styleOverride correctly', () => {
+  render(<>
+    <SettingsContext.Provider value={{ darkMode: false } as Settings}>
+      <GlobalStyleWrapper override={{ darkMode: true }}>
+        <span>children text</span>
+      </GlobalStyleWrapper>
+    </SettingsContext.Provider>
+  </>);
+
+  const globalStyleWrapper = screen.getByText("children text").parentElement;
+  expect(globalStyleWrapper).toHaveClass("bg-dark");
+  expect(globalStyleWrapper).toHaveClass("text-light");
+});

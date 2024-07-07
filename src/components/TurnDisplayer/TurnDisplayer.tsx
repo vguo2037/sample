@@ -2,13 +2,11 @@ import React, { useContext } from "react";
 import { GameStatusContext, SettingsContext } from "../../utils";
 import { reverseMark, winningOutcome } from "../../utils/gameControl";
 
-interface TurnDisplayerProps {
-  isNpcTurn: boolean
-};
-
-const TurnDisplayer: React.FC<TurnDisplayerProps> = ({ isNpcTurn }) => {
+const TurnDisplayer = () => {
   const { gameMode, gameOutcome, currentPlayer } = useContext(GameStatusContext);
   const { nickname, playerPlayAs } = useContext(SettingsContext);
+
+  const isNpcTurn = gameMode === "NPC" && currentPlayer !== playerPlayAs;
 
   if (gameMode === "ended") {
     switch (gameOutcome) {

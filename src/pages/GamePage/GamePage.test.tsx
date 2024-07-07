@@ -6,6 +6,12 @@ import { SettingsContext, GameStatusContext } from '../../utils';
 import type { GameStatus, Settings, GameMode } from '../../utils/types';
 import { createBoard } from '../../utils/contexts/gameStatus';
 import { useState } from 'react';
+import { makeNpcMove } from '../../utils/gameControl';
+
+jest.mock("../../utils/gameControl", () => ({
+  ...jest.requireActual("../../utils/gameControl"),
+  makeNpcMove: jest.fn()
+}));
 
 const MOCK_INITIAL_SCORE = 4;
 const mockAddScore = jest.fn();
@@ -25,7 +31,7 @@ const initialMockGameStatus = {
   gameOutcome: "none",
   npcDifficulty: 0,
   addScore: mockAddScore,
-  resetScore: mockResetScore,
+  resetScore: mockResetScore
 } as unknown as GameStatus;
 
 const TestRender = (
@@ -105,14 +111,12 @@ test("GamePage manages automatic NPC turns correctly", async () => {
       settingsOverride={{ playerPlayAs: "O" }}
     />, { wrapper: HashRouter });
   });
-  expect(screen.getByText("NPC (X) is thinking…")).toBeInTheDocument();
-  function sleep(period: number) {
-    return new Promise(resolve => setTimeout(resolve, period));
-  }
+  expect(makeNpcMove).toHaveBeenCalledTimes(0);
+  
   await act(async () => {
-    await sleep(2000); // wait *just* a little longer than the timeout in the component
+    await new Promise(resolve => setTimeout(resolve, 2000));
   });
-  expect(screen.getByText("It's your (O) turn!")).toBeInTheDocument();
+  expect(makeNpcMove).toHaveBeenCalledTimes(1);
 });
 
 describe("GamePage manages score changing functions correctly", () => {

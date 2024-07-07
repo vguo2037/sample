@@ -19,7 +19,7 @@ const TestRender = () => {
 test('NicknameSetter renders correctly', async () => {
   render(<TestRender />);
 
-  expect(screen.getByLabelText("input-nickname")).toBeInTheDocument();
+  expect(screen.getByTestId("form-nickname")).toBeInTheDocument();
   expect(screen.getByRole("button")).toBeInTheDocument();
 });
 
@@ -31,6 +31,6 @@ test("NicknameSetter changes value based on randomiser correctly", async () => {
     randomButton.dispatchEvent(new MouseEvent("click", { bubbles: true }));
   });
   
-  const inputBox = screen.getByLabelText("input-nickname")
+  const inputBox = screen.getByTestId("form-nickname");
   expect(inputBox).toHaveProperty("value", "MockNickname");
 });

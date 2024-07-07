@@ -109,7 +109,6 @@ export const makeNpcMove = (
     default:
       return;
   };
-  console.log('NPC choose', chosenCell);
   handleCellSelect({ row: chosenCell[0], col: chosenCell[1], mark: npcPlayAs });
 };
 

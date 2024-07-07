@@ -12,7 +12,7 @@ test("Toggle renders correctly", async () => {
 
 test("Toggle respond to checked changes correctly", async () => {
   render(<Toggle id="mock" onChange={onToggleChange} />);
-  const toggle = screen.getByTestId("toggle-mock").children[0];
+  const toggle = screen.getByTestId("toggle-mock");
 
   expect(toggle).toHaveProperty("checked", false);
   expect(onToggleChange).toHaveBeenCalledTimes(0);

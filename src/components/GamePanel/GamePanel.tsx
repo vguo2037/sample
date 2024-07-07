@@ -5,19 +5,18 @@ import { GameStatusContext, SettingsContext } from '../../utils';
 import type { CellCoords, GameCellObject, WinType } from '../../utils/types';
 import { getWinningCells } from '../../utils/gameControl';
 
-interface GamePanelProps {
-  disabled: boolean
-};
-
-const GamePanel: React.FC<GamePanelProps> = ({ disabled }) => {
-  const { gameMode, gameOutcome, pastMoves, wins } = useContext(GameStatusContext);
-  const { boardSize } = useContext(SettingsContext);
+const GamePanel = () => {
+  const { gameMode, gameOutcome, pastMoves, wins, currentPlayer } = useContext(GameStatusContext);
+  const { boardSize, playerPlayAs } = useContext(SettingsContext);
   const cellRefs = useRef<(GameCellObject | null)[]>([]);
   const panelStyle = gameMode === "none"
     ? { height: 0 }
     : { height: "fit-content" }
   ;
   const winningCells = useRef<CellCoords[]>([]);
+
+  const isNpcTurn = gameMode === "NPC" && currentPlayer !== playerPlayAs;
+  const disabled = isNpcTurn || gameMode === "ended";
 
   useEffect(() => {
     if (gameOutcome === 'oWin' || gameOutcome === "xWin") {
