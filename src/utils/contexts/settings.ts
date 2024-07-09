@@ -21,7 +21,7 @@ export const useSettingsValues = (initialSettings: SettingsValues) => {
   const [darkMode, setDarkMode] = useState<boolean>(initialSettings.darkMode);
   const [nickname, setNickname] = useState<string>(initialSettings.nickname);
   const [playerPlayAs, setPlayerPlayAs] = useState<PlayerMark>(initialSettings.playerPlayAs);
-  const [boardSize, setBoardSize] = useState<BoardSize>(3);
+  const [boardSize, setBoardSize] = useState<BoardSize>(initialSettings.boardSize);
 
   return {
     darkMode, setDarkMode,

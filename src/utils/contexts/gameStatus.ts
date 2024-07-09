@@ -57,11 +57,13 @@ export const useGameStatusValues = (initialGS: GameStatusValues) => {
       return boardCopy;
     });
   };
+
   const handleCellSelect = (move: CellMove) => {
     setBoardCell(move);
     pastMoves.current.push(move);
     setLastActionIsUndo(false);
   };
+
   const resetHistory = (newBoardSize: BoardSize) => {
     setBoard(createBoard(newBoardSize));
     pastMoves.current = [];
@@ -79,13 +81,15 @@ export const useGameStatusValues = (initialGS: GameStatusValues) => {
     }
 
     const lastMove = pastMoves.current[pastMoves.current.length-1];
+    if (lastMove.mark === currentPlayer) {
+      switchCurrentPlayer();
+    }
+
     const { gameOutcome, wins: moveWins } = checkMoveOutcome(board, lastMove);
     wins.current = moveWins;
     if (gameOutcome !== "none") {
       setGameMode("ended");
       setGameOutcome(gameOutcome);
-    } else {
-      switchCurrentPlayer();
     }
   }, [board]); // eslint-disable-line react-hooks/exhaustive-deps
 
