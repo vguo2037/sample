@@ -6,7 +6,7 @@ import { SettingsContext } from "../../utils";
 import type { Settings } from "../../utils/types";
 
 describe("GlobalStyleWrapper renders correctly", () => {
-  test("During light mode", async () => {
+  test("During light mode", () => {
     render(<>
       <SettingsContext.Provider value={{ darkMode: false } as Settings}>
         <GlobalStyleWrapper>
@@ -19,7 +19,7 @@ describe("GlobalStyleWrapper renders correctly", () => {
     expect(globalStyleWrapper).toHaveClass("bg-light");
     expect(globalStyleWrapper).toHaveClass("text-dark");
   });
-  test("During dark mode", async () => {
+  test("During dark mode", () => {
     render(<>
       <SettingsContext.Provider value={{ darkMode: true } as Settings}>
         <GlobalStyleWrapper>

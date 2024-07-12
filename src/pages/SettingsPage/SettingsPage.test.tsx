@@ -41,7 +41,7 @@ const TestRender = ({ broadcastStyleOverride }: {
   </>);
 };
 
-test("SettingsPage renders correctly", async () => {
+test("SettingsPage renders correctly", () => {
   render(
     <TestRender broadcastStyleOverride={broadcastStyleOverride} />,
     { wrapper: HashRouter }
@@ -52,7 +52,7 @@ test("SettingsPage renders correctly", async () => {
   expect(screen.getByTestId("form-darkMode")).toBeInTheDocument();
 });
 
-test("SettingsPage overrides global styling correctly", async () => {
+test("SettingsPage overrides global styling correctly", () => {
   render(
     <TestRender broadcastStyleOverride={broadcastStyleOverride} />,
     { wrapper: HashRouter }
@@ -102,7 +102,7 @@ describe("SettingsPage handles context values correctly", () => {
   });
 
   // assert original settings to be initialMockSettings
-  test("Renders original context values upon initial page load", async () => {
+  test("Renders original context values upon initial page load", () => {
     expect(inputNickname).toHaveProperty("value", "Player");
 
     for (const o of playerMarkOptions) {

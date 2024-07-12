@@ -28,7 +28,7 @@ jest.mock("react-icons/ri", () => ({
 }));
 
 describe("GameCell rendering correctly", () => {
-  test("During light mode", async () => {
+  test("During light mode", () => {
     render(<>
       <SettingsContext.Provider value={{ darkMode: false } as Settings}>
         <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
@@ -39,7 +39,7 @@ describe("GameCell rendering correctly", () => {
     expect(gameCell).toHaveClass("bg-light");
     expect(gameCell).toHaveClass("text-dark");
   });
-  test("During dark mode", async () => {
+  test("During dark mode", () => {
     render(<>
       <SettingsContext.Provider value={{ darkMode: true } as Settings}>
         <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
@@ -50,13 +50,13 @@ describe("GameCell rendering correctly", () => {
     expect(gameCell).toHaveClass("bg-dark");
     expect(gameCell).toHaveClass("text-light");
   });
-  test("When unmarked", async () => {
+  test("When unmarked", () => {
     render(<GameCell row={0} col={0} id={"mock-cell"} disabled={false} />);
 
     expect(screen.queryByText("ImCross")).not.toBeInTheDocument();
     expect(screen.queryByText("RiRadioButtonFill")).not.toBeInTheDocument();
   });
-  test("When marked with X", async () => {
+  test("When marked with X", () => {
     render(<>
       <GameStatusContext.Provider value={{...initialMockGameStatus, board: [["X"]]}}>
         <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
@@ -66,7 +66,7 @@ describe("GameCell rendering correctly", () => {
     expect(screen.queryByText("ImCross")).toBeInTheDocument();
     expect(screen.queryByText("RiRadioButtonFill")).not.toBeInTheDocument();
   });
-  test("When marked with O", async () => {
+  test("When marked with O", () => {
     render(<>
       <GameStatusContext.Provider value={{...initialMockGameStatus, board: [["O"]]}}>
         <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
@@ -79,7 +79,7 @@ describe("GameCell rendering correctly", () => {
 });
 
 describe("GameCell handles user selection correctly", () => {
-  test("When cell should be enabled", async () => {
+  test("When cell should be enabled", () => {
     render(<>
       <GameStatusContext.Provider value={{...initialMockGameStatus}}>
         <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
@@ -95,7 +95,7 @@ describe("GameCell handles user selection correctly", () => {
     expect(mockHandleCellSelect).toHaveBeenCalledTimes(1);
     expect(mockHandleCellSelect).toHaveBeenCalledWith(expectedMove);
   });
-  test("When cell should be disabled via props", async () => {
+  test("When cell should be disabled via props", () => {
     render(<>
       <GameStatusContext.Provider value={{...initialMockGameStatus}}>
         <GameCell row={0} col={0} id={"mock-cell"} disabled={true} />
@@ -110,7 +110,7 @@ describe("GameCell handles user selection correctly", () => {
     expect(mockHandleCellSelect).toHaveBeenCalledTimes(0);
   });
   describe("When cell should be disabled via internal logic", () => {
-    test("(When cell is already marked)", async () => {
+    test("(When cell is already marked)", () => {
       render(<>
         <GameStatusContext.Provider value={{...initialMockGameStatus, board: [["X"]]}}>
           <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
@@ -124,7 +124,7 @@ describe("GameCell handles user selection correctly", () => {
   
       expect(mockHandleCellSelect).toHaveBeenCalledTimes(0);
     });
-    test("(When game has ended)", async () => {
+    test("(When game has ended)", () => {
       render(<>
         <GameStatusContext.Provider value={{...initialMockGameStatus, gameMode: "ended"}}>
           <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
@@ -141,7 +141,7 @@ describe("GameCell handles user selection correctly", () => {
   });
 });
 
-test("GameCell handles being selected as winning cell correctly", async () => {
+test("GameCell handles being selected as winning cell correctly", () => {
   const TestRender = () => {
     const cellRef = useRef<(GameCellObject | null)>();
     useEffect(() => {

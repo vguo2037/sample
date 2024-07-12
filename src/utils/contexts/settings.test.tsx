@@ -58,7 +58,7 @@ const TestRender = ({ updatedSettings }: {
   </>);
 };
 
-test("useSettingsValues's functions render initial context values correctly", async () => {
+test("useSettingsValues's functions render initial context values correctly", () => {
   render(<TestRenderWrapper>
     <TestRender />
   </TestRenderWrapper>);
@@ -76,7 +76,7 @@ test("useSettingsValues's functions render initial context values correctly", as
   expect(screen.getByText(`boardSize: ${expectedBoardSize}`)).toBeInTheDocument();
 });
 
-test("useSettingsValues's functions modify context values correctly", async () => {
+test("useSettingsValues's functions modify context values correctly", () => {
   act(() => {
     render(<TestRenderWrapper>
       <TestRender updatedSettings={updatedSettings} />

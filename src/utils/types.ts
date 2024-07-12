@@ -98,3 +98,7 @@ export type CellWinnableCheckInputs = {
 export type GameCellObject = {
   setIsWinningCell: React.Dispatch<React.SetStateAction<boolean>>
 };
+
+export type NpcStrategies = Partial<{
+  [difficulty in NPCDifficulty]: (input: NPCStrategyInput) => number[];
+}>;

@@ -33,12 +33,12 @@ describe("GamePanel renders with the right number of cells", () => {
     const gamePanelWrapper = screen.getByTestId("test-gamepanel");
     expect(gamePanelWrapper.children[0].childElementCount).toBe(boardSize * boardSize);
   };
-  test("when boardSize === 3", async () => testPanelSize(3));
-  test("when boardSize === 5", async () => testPanelSize(5));
-  test("when boardSize === 7", async () => testPanelSize(7));
+  test("when boardSize === 3", () => testPanelSize(3));
+  test("when boardSize === 5", () => testPanelSize(5));
+  test("when boardSize === 7", () => testPanelSize(7));
 });
 
-test("GamePanel coordinates win displays correctly", async () => {
+test("GamePanel coordinates win displays correctly", () => {
   act(() => {
     render(<>
       <TestRender boardSize={5} gameStatusOverride={{

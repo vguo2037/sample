@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react"
 import "@testing-library/jest-dom"
 import PageStyleWrapper from "./PageStyleWrapper"
 
-test("PageStyleWrapper renders correctly", async () => {
+test("PageStyleWrapper renders correctly", () => {
   render(<>
     <PageStyleWrapper>
       <span>children text</span>

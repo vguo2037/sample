@@ -35,7 +35,7 @@ const TestRender = () => {
 };
 
 describe("ModePicker renders correctly", () => {
-  test("On initial load", async () => {
+  test("On initial load", () => {
     render(<TestRender />);
     expect(screen.getByText("An NPC")).toBeInTheDocument();
     expect(screen.getByText("Another player")).toBeInTheDocument();
@@ -54,7 +54,7 @@ describe("ModePicker renders correctly", () => {
 });
 
 describe("ModePicker handles game reset & starting logic correctly", () => {
-  test("When selecting easy NPC mode", async () => {
+  test("When selecting easy NPC mode", () => {
     render(<TestRender />);
 
     const dropdownTrigger = screen.getByText("An NPC");
@@ -62,7 +62,7 @@ describe("ModePicker handles game reset & starting logic correctly", () => {
       dropdownTrigger.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
     const easyNPCStart = screen.getByText("Easy");
-    await act(async () => {
+    act(() => {
       easyNPCStart.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
     expect(startGame).toHaveBeenCalledTimes(1);
@@ -72,7 +72,8 @@ describe("ModePicker handles game reset & starting logic correctly", () => {
     });
     expect(startGame).toHaveBeenCalledWith(startGameConditions);
   });
-  test("When selecting hard NPC mode", async () => {
+
+  test("When selecting hard NPC mode", () => {
     render(<TestRender />);
 
     const dropdownTrigger = screen.getByText("An NPC");
@@ -80,8 +81,8 @@ describe("ModePicker handles game reset & starting logic correctly", () => {
       dropdownTrigger.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
     const easyNPCStart = screen.getByText("Hard");
-    await act(async () => {
-      easyNPCStart.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    act(() => {
+    easyNPCStart.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
     expect(startGame).toHaveBeenCalledTimes(1);
 
@@ -90,7 +91,8 @@ describe("ModePicker handles game reset & starting logic correctly", () => {
     });
     expect(startGame).toHaveBeenCalledWith(startGameConditions);
   });
-  test("When selecting multiplayer mode", async () => {
+
+  test("When selecting multiplayer mode", () => {
     render(<TestRender />);
 
     const dropdownTrigger = screen.getByText("Another player");

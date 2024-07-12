@@ -21,4 +21,4 @@ or install a local instance and run it via `npm`.
   - SCSS
   - React Bootstrap
   - Framer Motion
-- Jest unit testing (incomplete)
+- Jest unit testing

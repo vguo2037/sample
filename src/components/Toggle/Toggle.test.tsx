@@ -5,7 +5,7 @@ import Toggle from "./Toggle"
 
 const onToggleChange = jest.fn();
 
-test("Toggle renders correctly", async () => {
+test("Toggle renders correctly", () => {
   render(<Toggle id="mock" onChange={onToggleChange} />);
   const toggle = screen.getByTestId("toggle-mock");
   expect(toggle).toBeInTheDocument();

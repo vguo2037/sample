@@ -31,10 +31,10 @@ export const useGameStatusValues = (initialGS: GameStatusValues) => {
   const [currentPlayer, setCurrentPlayer] = useState<PlayerMark>(initialGS.currentPlayer);
   const [gameMode, setGameMode] = useState<GameMode>(initialGS.gameMode);
   const [gameOutcome, setGameOutcome] = useState<GameOutcome>(initialGS.gameOutcome);
-  const [board, setBoard] = useState<Board>(initialGS.board);
-  const pastMoves = useRef<CellMove[]>(initialGS.pastMoves);
+  const [board, setBoard] = useState<Board>(JSON.parse(JSON.stringify(initialGS.board)));
+  const pastMoves = useRef<CellMove[]>(JSON.parse(JSON.stringify(initialGS.pastMoves)));
   const [npcDifficulty, setNpcDifficulty] = useState<NPCDifficulty>(initialGS.npcDifficulty);
-  const wins = useRef<WinType[]>(initialGS.wins);
+  const wins = useRef<WinType[]>(JSON.parse(JSON.stringify(initialGS.wins)));
   const [lastActionIsUndo, setLastActionIsUndo] = useState<boolean>(false);
 
   const addScore = () => setScore(s => s + 1);

@@ -1,4 +1,5 @@
-import { Board, BoardSize, CellCoords, CellMove, CellWinnableCheckInputs, GameOutcome, GameOutcomeChecker, GameStarter, GameStatus, MoveOutcomeChecker, NPCStrategyInput, PlayerMark, WinType } from "./types";
+import { Board, BoardSize, CellCoords, CellMove, CellWinnableCheckInputs, GameOutcome, GameOutcomeChecker, GameStarter, GameStatus, MoveOutcomeChecker, NpcStrategies, NPCStrategyInput, PlayerMark, WinType } from "./types";
+import * as gc from "./gameControl";
 
 export const noop = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
 
@@ -22,7 +23,7 @@ export const startGame: GameStarter = ({
   setGameMode(mode);
 };
 
-const npcStrategyRandom = ({ board }: NPCStrategyInput) => {
+export const npcStrategyRandom = ({ board }: NPCStrategyInput) => {
   const emptyCells: number[][] = [];
 
   for (let i=0; i<board.length; i++) for (let j=0; j<board[0].length; j++) {
@@ -75,7 +76,7 @@ export const getWinningCells = (wins: WinType[], lastMove: CellMove, boardSize: 
   return winningCells;
 };
 
-const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
+export const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
   let winnableOpponent = null;
   const boardSize = board.length;
 
@@ -94,24 +95,21 @@ const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
   if (!board[center][center]) return [center, center];
 
   // pick any cell
-  return npcStrategyRandom({ board, npcPlayAs });
+  return gc.npcStrategyRandom({ board, npcPlayAs });
 };
 
 export const makeNpcMove = (
   { board, npcDifficulty, handleCellSelect }: GameStatus,
-  npcPlayAs: PlayerMark
+  npcPlayAs: PlayerMark,
+  npcStrategies: NpcStrategies = { 1: npcStrategyRandom, 2: npcStrategyTactical }
 ) => {
-  let chosenCell: number[] = [];
-  switch (npcDifficulty) {
-    case 1:
-      chosenCell = npcStrategyRandom({ board, npcPlayAs });
-      break;
-    case 2:
-      chosenCell = npcStrategyTactical({ board, npcPlayAs });
-      break;
-    default:
-      return;
+  const strategy = npcStrategies[npcDifficulty];
+
+  if (!strategy || typeof strategy !== "function") {
+    throw new Error("Invalid npcDifficulty entered.");
   }
+
+  const chosenCell = strategy({ board, npcPlayAs });
   handleCellSelect({ row: chosenCell[0], col: chosenCell[1], mark: npcPlayAs });
 };
 

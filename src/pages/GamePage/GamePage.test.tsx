@@ -120,7 +120,7 @@ test("GamePage manages automatic NPC turns correctly", async () => {
 });
 
 describe("GamePage manages score changing functions correctly", () => {
-  test("for resetting score", async () => {
+  test("for resetting score", () => {
     render(<TestRender />, { wrapper: HashRouter });
 
     const resetButton = screen.getByText("Reset");
@@ -130,7 +130,7 @@ describe("GamePage manages score changing functions correctly", () => {
     expect(mockAddScore).toHaveBeenCalledTimes(0);
     expect(mockResetScore).toHaveBeenCalledTimes(1);
   });
-  test("for adding score after winning", async () => {
+  test("for adding score after winning", () => {
     act(() => {
       render(<TestRender
         gameStatusOverride={{ gameMode: "ended", gameOutcome: "xWin" }}
@@ -139,7 +139,7 @@ describe("GamePage manages score changing functions correctly", () => {
     expect(mockAddScore).toHaveBeenCalledTimes(1);
     expect(mockResetScore).toHaveBeenCalledTimes(0);
   });
-  test("for not changing score after losing", async () => {
+  test("for not changing score after losing", () => {
     act(() => {
       render(<TestRender
         gameStatusOverride={{ gameMode: "ended", gameOutcome: "oWin" }}
@@ -148,7 +148,7 @@ describe("GamePage manages score changing functions correctly", () => {
     expect(mockAddScore).toHaveBeenCalledTimes(0);
     expect(mockResetScore).toHaveBeenCalledTimes(0);
   });
-  test("for not changing score after draw", async () => {
+  test("for not changing score after draw", () => {
     act(() => {
       render(<TestRender
         gameStatusOverride={{ gameMode: "ended", gameOutcome: "draw" }}

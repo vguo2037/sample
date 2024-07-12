@@ -32,14 +32,14 @@ const runTest = ({ settingsOverride, gameStatusOverride, expectedText }: {
 
 describe("TurnDisplayer renders correctly", () => {
   describe("For a round with an NPC", () => {
-    test("When it is player's turn", async () => {
+    test("When it is player's turn", () => {
       runTest({
         settingsOverride: { playerPlayAs: "O" },
         gameStatusOverride: { gameMode: "NPC", currentPlayer: "O" },
         expectedText: "It's your (O) turn!"
       });
     });
-    test("When it is NPC's turn", async () => {
+    test("When it is NPC's turn", () => {
       runTest({
         settingsOverride: { playerPlayAs: "O" },
         gameStatusOverride: { gameMode: "NPC", currentPlayer: "X" },
@@ -48,13 +48,13 @@ describe("TurnDisplayer renders correctly", () => {
     });
   });
   describe("For a multiplayer round", () => {
-    test("When it is player X's turn", async () => {
+    test("When it is player X's turn", () => {
       runTest({
         gameStatusOverride: { gameMode: "multiplayer", currentPlayer: "X" },
         expectedText: "It is Player X's turn!"
       });
     });
-    test("When it is player O's turn", async () => {
+    test("When it is player O's turn", () => {
       runTest({
         gameStatusOverride: { gameMode: "multiplayer", currentPlayer: "O" },
         expectedText: "It is Player O's turn!"
@@ -62,21 +62,21 @@ describe("TurnDisplayer renders correctly", () => {
     });
   });
   describe("When game has ended", () => {
-    test("(When player has won game)", async () => {
+    test("(When player has won game)", () => {
       runTest({
         settingsOverride: { playerPlayAs: "O", nickname: "MockNickname" },
         gameStatusOverride: { gameMode: "ended", gameOutcome: "oWin" },
         expectedText: "MockNickname wins!"
       });
     });
-    test("(When player has lost game)", async () => {
+    test("(When player has lost game)", () => {
       runTest({
         settingsOverride: { playerPlayAs: "O", nickname: "MockNickname" },
         gameStatusOverride: { gameMode: "ended", gameOutcome: "xWin" },
         expectedText: "MockNickname loses!"
       });
     });
-    test("(When game has ended in a draw)", async () => {
+    test("(When game has ended in a draw)", () => {
       runTest({
         gameStatusOverride: { gameMode: "ended", gameOutcome: "draw" },
         expectedText: "It's a draw!"

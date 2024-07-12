@@ -5,7 +5,7 @@ import { HashRouter } from "react-router-dom"
 import { SettingsContext } from "../../utils";
 import type { Settings } from "../../utils/types";
 
-test("LandingPage renders correctly", async () => {
+test("LandingPage renders correctly", () => {
   const mockSettings = { nickname: "MockName" } as Settings;
   render(<>
     <SettingsContext.Provider value={ mockSettings }>

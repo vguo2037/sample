@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import "@testing-library/jest-dom";
-import { checkMoveOutcome, getWinningCells, makeNpcMove, startGame } from "./gameControl";
 import { act, render } from "@testing-library/react";
 import { createBoard, GameStatusContext, useGameStatusValues } from "./contexts/gameStatus";
-import type { Board, BoardSize, CellMove, GameStatus, GameStatusValues, NPCDifficulty, WinType } from "./types";
+import type { Board, CellMove, GameStatus, GameStatusValues, NpcStrategies, WinType } from "./types";
 
-// noop, reverseMark, winningOutcome not tested as they are trivial
+import * as gameControl from "./gameControl";
+const { checkMoveOutcome, getWinningCells, makeNpcMove, startGame, npcStrategyRandom, npcStrategyTactical } = gameControl;
 
-test("startGame should change game settings correctly", async () => {
+// noop, reverseMark, winningOutcome are not tested as their codes are trivial
+
+test("startGame should change game settings correctly", () => {
   const DEFAULT_SIZE = 3;
   const initialMockGameStatus: GameStatusValues = {
     gameMode: "ended",
@@ -140,56 +142,170 @@ describe("getWinningCells should return the right winning cells for a move", () 
   });
 });
 
-describe("makeNpcMove", () => {
+describe("makeNpcMove should call the correct npc strategy and make the calculated move", () => {
   const handleCellSelect = jest.fn();
+  const board = createBoard(3);
   
-  beforeEach(() => {
-    handleCellSelect.mockClear();
+  test("for a difficulty with existing strategy", () => {
+    const mockStrategies = { 9: jest.fn() };
+    mockStrategies[9].mockReturnValue([0, 0]);
+
+    const handleCellSelect = jest.fn();
+    const boardCopy = JSON.parse(JSON.stringify(board));
+
+    expect(mockStrategies[9]).toHaveBeenCalledTimes(0);
+    makeNpcMove(
+      { board: boardCopy, npcDifficulty: 9, handleCellSelect } as unknown as GameStatus,
+      "X",
+      mockStrategies as NpcStrategies
+    );
+    expect(mockStrategies[9]).toHaveBeenCalledTimes(1);
+
+    const expectedMove = expect.objectContaining({ row: 0, col: 0, mark: "X" });
+    expect(handleCellSelect).toHaveBeenCalledWith(expectedMove);
   });
-  
-  const testValidMoves = (npcDifficulty: NPCDifficulty, boardSize: BoardSize) => {
-    const board: Board = new Array(boardSize).fill(Array(boardSize).fill("O"));
-    expect(handleCellSelect).toHaveBeenCalledTimes(0);
+  test("for invalid difficulty", () => {
+    const mockStrategies = {};
+    const boardCopy = JSON.parse(JSON.stringify(board));
 
-    for (let i=0; i<boardSize; i++) for (let j=0; j<boardSize; j++) {
-      const boardCopy = JSON.parse(JSON.stringify(board)); 
-      boardCopy[i][j] = null;
-
-      const expectedMove: CellMove = expect.objectContaining({
-        row: i, col: j, mark: "X"
-      });
-
+    expect(() => {
       makeNpcMove(
-        { board: boardCopy, npcDifficulty, handleCellSelect } as unknown as GameStatus,
-        "X"
+        { board: boardCopy, npcDifficulty: 2, handleCellSelect } as unknown as GameStatus,
+        "X",
+        mockStrategies as NpcStrategies
       );
+    }).toThrow("Invalid npcDifficulty entered.");
+  });
+});
 
-      expect(handleCellSelect).toHaveBeenCalledTimes(1);
-      expect(handleCellSelect).toHaveBeenLastCalledWith(expectedMove);
+test("npcStrategyRandom should only make valid moves", () => {
+  const boardSize = 3;
+  const board: Board = new Array(boardSize).fill(Array(boardSize).fill("O"));
 
-      handleCellSelect.mockClear();
-    }
+  for (let i=0; i<boardSize; i++) for (let j=0; j<boardSize; j++) {
+    const boardCopy = JSON.parse(JSON.stringify(board)); 
+    boardCopy[i][j] = null;
+
+    const expectedSelectedCell = expect.arrayContaining([i, j]);
+
+    const selectedCell = npcStrategyRandom({ board: boardCopy, npcPlayAs: "X" });
+    expect(selectedCell).toMatchObject(expectedSelectedCell);
+  }
+});
+
+describe("npcStrategyTactical", () => {
+  const checkCorrectExpectedMove = (board: Board, expectedSelectedCell: number[]) => {
+    const selectedCell = npcStrategyTactical({ board, npcPlayAs: "X" });
+    expect(selectedCell).toMatchObject(expect.arrayContaining(expectedSelectedCell));
   };
-  
-  test("should make valid moves for difficulty 1 (Easy)", async () => {
-    testValidMoves(1, 3);
+
+  test("should play to make self win via row", () => {
+    const board: Board = [
+      [null, "O", "O"],
+      [null, null, null],
+      [null, "X", "X"]
+    ];
+    const expectedSelectedCell = [2, 0];
+    checkCorrectExpectedMove(board, expectedSelectedCell);
   });
 
-  test("should make valid moves for difficulty 2 (Hard)", async () => {
-    testValidMoves(2, 3);
+  test("should play to make self win via column", () => {
+    const board: Board = [
+      [null, "O", "X"],
+      [null, "O", null],
+      [null, null, "X"]
+    ];
+    const expectedSelectedCell = [1, 2];
+    checkCorrectExpectedMove(board, expectedSelectedCell);
   });
 
-  // TODO
-  // describe("should play for wins for difficulty 2 (Hard)", () => {
-  //   test("(play for row wins)", async () => {});
-  //   test("(play for column wins)", async () => {});
-  //   test("(play for primary diagonal wins)", async () => {});
-  //   test("(play for secondary diagonal wins)", async () => {});
-  // });
+  test("should play to make self win via principal diagonal", () => {
+    const board: Board = [
+      [null, null, null],
+      [null, "X", null],
+      [null, null, "X"]
+    ];
+    const expectedSelectedCell = [0, 0];
+    checkCorrectExpectedMove(board, expectedSelectedCell);
+  });
+
+  test("should play to make self win via secondary diagonal", () => {
+    const board: Board = [
+      [null, null, "X"],
+      [null, "X", null],
+      [null, null, null]
+    ];
+    const expectedSelectedCell = [2, 0];
+    checkCorrectExpectedMove(board, expectedSelectedCell);
+  });
+
+  test("if self cannot win, should play to block opponent win via row", () => {
+    const board: Board = [
+      [null, "O", "O"],
+      [null, null, null],
+      [null, null, "X"]
+    ];
+    const expectedSelectedCell = [0, 0];
+    checkCorrectExpectedMove(board, expectedSelectedCell);
+  });
+
+  test("if self cannot win, should play to block opponent win via column", () => {
+    const board: Board = [
+      [null, "O", null],
+      [null, "O", null],
+      [null, null, "X"]
+    ];
+    const expectedSelectedCell = [2, 1];
+    checkCorrectExpectedMove(board, expectedSelectedCell);
+  });
+
+  test("if self cannot win, should play to block opponent win via principal diagonal", () => {
+    const board: Board = [
+      [null, null, null],
+      [null, "O", null],
+      [null, null, "O"]
+    ];
+    const expectedSelectedCell = [0, 0];
+    checkCorrectExpectedMove(board, expectedSelectedCell);
+  });
+
+  test("if self cannot win, should play to block opponent win via secondary diagonal", () => {
+    const board: Board = [
+      [null, null, "O"],
+      [null, "O", null],
+      [null, null, null]
+    ];
+    const expectedSelectedCell = [2, 0];
+    checkCorrectExpectedMove(board, expectedSelectedCell);
+  });
+
+  test("if cannot make self win nor block opponent win, then make centre move", () => {
+    const board: Board = [
+      [null, null, null],
+      [null, null, null],
+      [null, null, null]
+    ];
+    const expectedSelectedCell = [1, 1];
+    checkCorrectExpectedMove(board, expectedSelectedCell);
+  });
+
+  test("if cannot block opponent win, make self win, nor make centre move, then should make random move ", () => {
+    const spyRandom = jest.spyOn(gameControl, "npcStrategyRandom");
+
+    const board: Board = [
+      [null, null, null],
+      [null, "O", null],
+      [null, null, null]
+    ];
+    
+    expect(spyRandom).toHaveBeenCalledTimes(0);
+    npcStrategyTactical({ board, npcPlayAs: "X" });
+    expect(spyRandom).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("checkMoveOutcome", () => {
-  test("should detect row xWins", async () => {
+  test("should detect row xWins", () => {
     const board: Board = [
       ["X", "X", "X"],
       ["O", "O", null],
@@ -202,7 +318,7 @@ describe("checkMoveOutcome", () => {
       expect.objectContaining({ gameOutcome: "xWin", wins: ["rowWin"] })
     );
   });
-  test("should detect column xWins", async () => {
+  test("should detect column xWins", () => {
     const board: Board = [
       ["X", null, "X"],
       ["O", "O", "X"],
@@ -215,7 +331,7 @@ describe("checkMoveOutcome", () => {
       expect.objectContaining({ gameOutcome: "xWin", wins: ["colWin"] })
     );
   });
-  test("should detect primary diagonal xWins", async () => {
+  test("should detect primary diagonal xWins", () => {
     const board: Board = [
       ["X", null, "X"],
       ["O", "X", "O"],
@@ -228,7 +344,7 @@ describe("checkMoveOutcome", () => {
       expect.objectContaining({ gameOutcome: "xWin", wins: ["principDiagWin"] })
     );
   });
-  test("should detect secondary diagonal xWins", async () => {
+  test("should detect secondary diagonal xWins", () => {
     const board: Board = [
       ["O", null, "X"],
       ["O", "X", "O"],
@@ -241,7 +357,7 @@ describe("checkMoveOutcome", () => {
       expect.objectContaining({ gameOutcome: "xWin", wins: ["secondDiagWin"] })
     );
   });
-  test("should detect multiple xWins", async () => {
+  test("should detect multiple xWins", () => {
     const board: Board = [
       ["X", null, "X", null, "X"],
       [null, "X", "X", "X", null],
@@ -259,7 +375,7 @@ describe("checkMoveOutcome", () => {
       })
     );
   });
-  test("should detect oWins", async () => {
+  test("should detect oWins", () => {
     const board: Board = [
       ["O", null, "O", null, "O"],
       [null, "O", "O", "O", null],

@@ -16,7 +16,7 @@ const TestRender = () => {
   return <NicknameSetter newNickname={newNickname} setNewNickname={setNewNickname} />;
 };
 
-test("NicknameSetter renders correctly", async () => {
+test("NicknameSetter renders correctly", () => {
   render(<TestRender />);
 
   expect(screen.getByTestId("form-nickname")).toBeInTheDocument();

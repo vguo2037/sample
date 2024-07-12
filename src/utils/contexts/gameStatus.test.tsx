@@ -42,13 +42,16 @@ const initialGameStatus: GameStatusValues = {
   gameMode: "NPC",
   gameOutcome: "none",
   board: JSON.parse(JSON.stringify(initialBoard)),
-  pastMoves: initialPastMoves.slice(),
+  pastMoves: JSON.parse(JSON.stringify(initialPastMoves)),
   npcDifficulty: 2,
   wins: [],
 };
 
-const TestRenderWrapper = ({ children }: { children: React.ReactNode }) => {
-  const gameStatusContext = useGameStatusValues(initialGameStatus);
+const TestRenderWrapper = ({ children, gsOverride }: {
+  children: React.ReactNode,
+  gsOverride?: Partial<GameStatusValues>
+}) => {
+  const gameStatusContext = useGameStatusValues({...initialGameStatus, ...gsOverride});
   return (
     <GameStatusContext.Provider value={gameStatusContext}>
       {children}
@@ -143,14 +146,13 @@ const TestFunctionsRender: React.FC<TestFunctionsRenderProps> = ({
       <button onClick={handleSetGameOutcome}>setGameOutcome</button>
       <button onClick={handleHandleCellSelect}>handleCellSelect</button>
       <button onClick={handleResetHistory}>resetHistory</button>
-      <button onClick={undoMove}>undoMove: NPC mode</button>
-      <button onClick={undoMove}>undoMove: multiplayer mode</button>
+      <button onClick={undoMove}>undoMove</button>
       <button onClick={handleSetNpcDifficulty}>setNpcDifficulty</button>
     </>
   );
 };
 
-test("useGameStatusValues's functions render initial context values correctly", async () => {
+test("useGameStatusValues's functions render initial context values correctly", () => {
   render(
     <TestRenderWrapper>
       <TestValuesRender />
@@ -187,7 +189,7 @@ test("useGameStatusValues's functions render initial context values correctly", 
 });
 
 describe("useGameStatusValues's functions modify context values correctly", () => {
-  test("addScore should increment current score by one", async () => {
+  test("addScore should increment current score by one", () => {
     render(
       <TestRenderWrapper>
         <TestValuesRender />
@@ -226,7 +228,7 @@ describe("useGameStatusValues's functions modify context values correctly", () =
 
     const initialScore = initialGameStatus.score + 1; // ensures score > 0
 
-    test("should not modify score if user cancells operation", async () => {
+    test("should not modify score if user cancells operation", () => {
       (confirm as jest.Mock).mockReturnValueOnce(false);
 
       act(() => {
@@ -237,7 +239,7 @@ describe("useGameStatusValues's functions modify context values correctly", () =
       expect(screen.getByText(`score: ${initialScore}`)).toBeInTheDocument();
     });
 
-    test("should modify score if user confirms operation", async () => {
+    test("should modify score if user confirms operation", () => {
       (confirm as jest.Mock).mockReturnValueOnce(true);
       
       act(() => {
@@ -249,7 +251,7 @@ describe("useGameStatusValues's functions modify context values correctly", () =
     });
   });
 
-  test("switchCurrentPlayer", async () => {
+  test("switchCurrentPlayer", () => {
     render(
       <TestRenderWrapper>
         <TestValuesRender />
@@ -271,7 +273,7 @@ describe("useGameStatusValues's functions modify context values correctly", () =
     ).toBeInTheDocument();
   });
 
-  test("setGameMode", async () => {
+  test("setGameMode", () => {
     const expectedGameMode = "none";
 
     render(
@@ -289,7 +291,7 @@ describe("useGameStatusValues's functions modify context values correctly", () =
     });
   });
 
-  test("setGameOutcome", async () => {
+  test("setGameOutcome", () => {
     const expectedGameOutcome = "draw";
 
     render(
@@ -311,7 +313,7 @@ describe("useGameStatusValues's functions modify context values correctly", () =
     ).toBeInTheDocument();
   });
 
-  test("handleCellSelect", async () => {
+  test("handleCellSelect", () => {
     // given current initialGameStatus, game will end with an "xWin" after this move
     const nextCellMove: CellMove = { row: 2, col: 2, mark: "X" };
 
@@ -335,7 +337,7 @@ describe("useGameStatusValues's functions modify context values correctly", () =
     expect(screen.getByText(`board: ${JSON.stringify(expectedBoard)}`)).toBeInTheDocument();
 
     // expect new move to be added to pastMoves
-    const expectedPastMoves = initialPastMoves.slice();
+    const expectedPastMoves = JSON.parse(JSON.stringify(initialPastMoves));
     expectedPastMoves.push(nextCellMove);
     expect(screen.getByText(`pastMoves: ${JSON.stringify(expectedPastMoves)}`)).toBeInTheDocument();
 
@@ -352,7 +354,7 @@ describe("useGameStatusValues's functions modify context values correctly", () =
     expect(screen.getByText(`gameMode: ${expectedGameMode}`)).toBeInTheDocument();
   });
 
-  test("resetHistory", async () => {
+  test("resetHistory", () => {
     const updatedBoardSize = 5;
     render(
       <TestRenderWrapper>
@@ -383,10 +385,106 @@ describe("useGameStatusValues's functions modify context values correctly", () =
     expect(screen.getByText(`board: ${JSON.stringify(expectedBoard)}`)).toBeInTheDocument();
   });
 
-  // test("undoMove during NPC mode", async () => {});
-  // test("undoMove during multiplayer mode", async () => {});
+  test("undoMove during NPC mode, when there are ≥2 moves on the board", () => {
+    render(
+      <TestRenderWrapper>
+        <TestValuesRender />
+        <TestFunctionsRender />
+      </TestRenderWrapper>,
+    );
 
-  test("setNpcDifficulty", async () => {
+    const undoMoveButton = screen.getByText("undoMove");
+    act(() => {
+      undoMoveButton.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    });
+
+    // expect the last 2 moves from pastMoves to have been removed
+    const expectedPastMoves: CellMove[] = [
+      { row: 0, col: 1, mark: "X" },
+      { row: 1, col: 1, mark: "O" },
+      { row: 2, col: 1, mark: "X" },
+      { row: 0, col: 2, mark: "O" },
+      { row: 1, col: 2, mark: "X" },
+      { row: 1, col: 0, mark: "O" },
+    ];
+    expect(screen.getByText(`pastMoves: ${JSON.stringify(expectedPastMoves)}`)).toBeInTheDocument();
+
+    // expect the last 2 moves on the board to have been cleared
+    const expectedBoard = [
+      [null, "X", "O"],
+      ["O", "O", "X"],
+      [null, "X", null],
+    ];
+    expect(screen.getByText(`board: ${JSON.stringify(expectedBoard)}`)).toBeInTheDocument();
+  });
+
+  test("undoMove during NPC mode, when there is only 1 move on the board", () => {
+    const initialBoard: Board = [
+      [null, null, "X"],
+      [null, null, null],
+      [null, null, null],
+    ];
+    const initialPastMoves: CellMove[] = [{ row: 0, col: 2, mark: "X" }];
+    
+    render(
+      <TestRenderWrapper gsOverride={{
+        board: initialBoard,
+        pastMoves: initialPastMoves
+      }} >
+        <TestValuesRender />
+        <TestFunctionsRender />
+      </TestRenderWrapper>,
+    );
+
+    const undoMoveButton = screen.getByText("undoMove");
+    act(() => {
+      undoMoveButton.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    });
+
+    // expect the last move from pastMoves to have been removed
+    const expectedPastMoves: CellMove[] = [];
+    expect(screen.getByText(`pastMoves: ${JSON.stringify(expectedPastMoves)}`)).toBeInTheDocument();
+
+    // expect the last move on the board to have been cleared
+    const expectedBoard = createBoard(3);
+    expect(screen.getByText(`board: ${JSON.stringify(expectedBoard)}`)).toBeInTheDocument();
+  });
+
+  test("undoMove during multiplayer mode", () => {
+    render(
+      <TestRenderWrapper gsOverride={{ gameMode: "multiplayer" }}>
+        <TestValuesRender />
+        <TestFunctionsRender />
+      </TestRenderWrapper>,
+    );
+
+    const undoMoveButton = screen.getByText("undoMove");
+    act(() => {
+      undoMoveButton.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    });
+
+    // expect the last 2 moves from pastMoves to have been removed
+    const expectedPastMoves: CellMove[] = [
+      { row: 0, col: 1, mark: "X" },
+      { row: 1, col: 1, mark: "O" },
+      { row: 2, col: 1, mark: "X" },
+      { row: 0, col: 2, mark: "O" },
+      { row: 1, col: 2, mark: "X" },
+      { row: 1, col: 0, mark: "O" },
+      { row: 2, col: 0, mark: "X" },
+    ];
+    expect(screen.getByText(`pastMoves: ${JSON.stringify(expectedPastMoves)}`)).toBeInTheDocument();
+
+    // expect the last 2 moves on the board to have been cleared
+    const expectedBoard = [
+      [null, "X", "O"],
+      ["O", "O", "X"],
+      ["X", "X", null],
+    ];
+    expect(screen.getByText(`board: ${JSON.stringify(expectedBoard)}`)).toBeInTheDocument();
+  });
+
+  test("setNpcDifficulty", () => {
     const expectedNpcDifficulty = 0;
 
     render(
