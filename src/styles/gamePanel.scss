@@ -33,6 +33,7 @@
   };
 };
 
+// dynamic cell display of borders in-between cells
 $board-sizes: (3, 5, 7);
 @each $s in $board-sizes {
   .game-grid[class*="board-size-#{$s}"] {
@@ -40,7 +41,6 @@ $board-sizes: (3, 5, 7);
   };
 
   .game-cell {
-    // borders in-between cells
     @for $i from 1 through ($s - 1) {
       &:nth-child(#{$i})::before,
       &:nth-child(#{$i})::before {

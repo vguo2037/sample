@@ -1,3 +1,5 @@
+// NPC/multiplayer mode selection buttons
+
 import React, { useContext } from "react";
 import { GameStatusContext, SettingsContext } from "../../utils";
 import { Button, ButtonGroup, Dropdown, DropdownButton } from "react-bootstrap";

@@ -1,3 +1,5 @@
+// style (animation) wrapper for individual pages
+
 import React from "react";
 import { motion } from "framer-motion"; 
 

@@ -1,3 +1,7 @@
+// context for the current game status
+// this is necessary to allow mid-game browsing of landing/setting pages without losing progress
+// also outputs functions that directly changes the game context
+
 import { createContext, useEffect, useRef, useState } from "react";
 import type { GameMode, GameOutcome, PlayerMark, GameStatus, Board, CellMove, NPCDifficulty, WinType, BoardSize, GameStatusValues } from "../types";
 import { checkMoveOutcome, noop } from "../gameControl";
@@ -35,6 +39,8 @@ export const useGameStatusValues = (initialGS: GameStatusValues) => {
   const pastMoves = useRef<CellMove[]>(JSON.parse(JSON.stringify(initialGS.pastMoves)));
   const [npcDifficulty, setNpcDifficulty] = useState<NPCDifficulty>(initialGS.npcDifficulty);
   const wins = useRef<WinType[]>(JSON.parse(JSON.stringify(initialGS.wins)));
+
+  // prevents changes to board via undos from triggering other game processes
   const [lastActionIsUndo, setLastActionIsUndo] = useState<boolean>(false);
 
   const addScore = () => setScore(s => s + 1);
@@ -48,6 +54,7 @@ export const useGameStatusValues = (initialGS: GameStatusValues) => {
     setCurrentPlayer(p => p === "X" ? "O" : "X");
   };
 
+  // helper function, not exposed to consumers
   const setBoardCell = (
     { row, col, mark }: Pick<CellMove, "row" | "col"> & { mark: null | PlayerMark }
   ) => {

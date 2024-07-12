@@ -1,3 +1,6 @@
+// style wrapper for overal app
+// accounts for temporary display (override) of styling via settings page
+
 import React, { useContext } from "react";
 import { AnimatePresence } from "framer-motion"; 
 import { SettingsContext } from "../../utils";

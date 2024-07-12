@@ -31,7 +31,7 @@ describe("GameCell rendering correctly", () => {
   test("During light mode", () => {
     render(<>
       <SettingsContext.Provider value={{ darkMode: false } as Settings}>
-        <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
+        <GameCell row={0} col={0} id={"mock-cell"} />
       </SettingsContext.Provider>
     </>);
     
@@ -42,7 +42,7 @@ describe("GameCell rendering correctly", () => {
   test("During dark mode", () => {
     render(<>
       <SettingsContext.Provider value={{ darkMode: true } as Settings}>
-        <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
+        <GameCell row={0} col={0} id={"mock-cell"} />
       </SettingsContext.Provider>
     </>);
     
@@ -51,7 +51,7 @@ describe("GameCell rendering correctly", () => {
     expect(gameCell).toHaveClass("text-light");
   });
   test("When unmarked", () => {
-    render(<GameCell row={0} col={0} id={"mock-cell"} disabled={false} />);
+    render(<GameCell row={0} col={0} id={"mock-cell"} />);
 
     expect(screen.queryByText("ImCross")).not.toBeInTheDocument();
     expect(screen.queryByText("RiRadioButtonFill")).not.toBeInTheDocument();
@@ -59,7 +59,7 @@ describe("GameCell rendering correctly", () => {
   test("When marked with X", () => {
     render(<>
       <GameStatusContext.Provider value={{...initialMockGameStatus, board: [["X"]]}}>
-        <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
+        <GameCell row={0} col={0} id={"mock-cell"} />
       </GameStatusContext.Provider>
     </>);
 
@@ -69,7 +69,7 @@ describe("GameCell rendering correctly", () => {
   test("When marked with O", () => {
     render(<>
       <GameStatusContext.Provider value={{...initialMockGameStatus, board: [["O"]]}}>
-        <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
+        <GameCell row={0} col={0} id={"mock-cell"} />
       </GameStatusContext.Provider>
     </>);
 
@@ -82,7 +82,7 @@ describe("GameCell handles user selection correctly", () => {
   test("When cell should be enabled", () => {
     render(<>
       <GameStatusContext.Provider value={{...initialMockGameStatus}}>
-        <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
+        <GameCell row={0} col={0} id={"mock-cell"} />
       </GameStatusContext.Provider>
     </>);
 
@@ -95,25 +95,12 @@ describe("GameCell handles user selection correctly", () => {
     expect(mockHandleCellSelect).toHaveBeenCalledTimes(1);
     expect(mockHandleCellSelect).toHaveBeenCalledWith(expectedMove);
   });
-  test("When cell should be disabled via props", () => {
-    render(<>
-      <GameStatusContext.Provider value={{...initialMockGameStatus}}>
-        <GameCell row={0} col={0} id={"mock-cell"} disabled={true} />
-      </GameStatusContext.Provider>
-    </>);
 
-    const gameCell = screen.getByRole("button");
-    act(() => {
-      gameCell.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    });
-
-    expect(mockHandleCellSelect).toHaveBeenCalledTimes(0);
-  });
   describe("When cell should be disabled via internal logic", () => {
     test("(When cell is already marked)", () => {
       render(<>
         <GameStatusContext.Provider value={{...initialMockGameStatus, board: [["X"]]}}>
-          <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
+          <GameCell row={0} col={0} id={"mock-cell"} />
         </GameStatusContext.Provider>
       </>);
   
@@ -124,11 +111,33 @@ describe("GameCell handles user selection correctly", () => {
   
       expect(mockHandleCellSelect).toHaveBeenCalledTimes(0);
     });
+
     test("(When game has ended)", () => {
       render(<>
         <GameStatusContext.Provider value={{...initialMockGameStatus, gameMode: "ended"}}>
-          <GameCell row={0} col={0} id={"mock-cell"} disabled={false} />
+          <GameCell row={0} col={0} id={"mock-cell"} />
         </GameStatusContext.Provider>
+      </>);
+  
+      const gameCell = screen.getByRole("button");
+      act(() => {
+        gameCell.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      });
+  
+      expect(mockHandleCellSelect).toHaveBeenCalledTimes(0);
+    });
+
+    test("(When NPC is taking turn)", () => {
+      render(<>
+        <SettingsContext.Provider value={{ playerPlayAs: "X" } as Settings}>
+          <GameStatusContext.Provider value={{
+            ...initialMockGameStatus,
+            gameMode: "NPC",
+            currentPlayer: "O"
+          }}>
+            <GameCell row={0} col={0} id={"mock-cell"} />
+          </GameStatusContext.Provider>
+        </SettingsContext.Provider>
       </>);
   
       const gameCell = screen.getByRole("button");
@@ -149,7 +158,7 @@ test("GameCell handles being selected as winning cell correctly", () => {
     }, []);
     return <>
       <GameStatusContext.Provider value={{...initialMockGameStatus, board: [["O"]]}}>
-        <GameCell disabled={false}
+        <GameCell
           row={0} col={0} id={"cell-0"} ref={obj => cellRef.current = obj} 
         />
       </GameStatusContext.Provider>

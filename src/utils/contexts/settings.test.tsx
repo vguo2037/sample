@@ -1,3 +1,5 @@
+// tests for the context's value initialisation and exposed functions
+
 import React, { useContext, useEffect } from "react";
 import { act, render, screen } from "@testing-library/react"
 import "@testing-library/jest-dom"

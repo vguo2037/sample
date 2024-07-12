@@ -46,6 +46,7 @@ test("SettingsPage renders correctly", () => {
     <TestRender broadcastStyleOverride={broadcastStyleOverride} />,
     { wrapper: HashRouter }
   );
+
   expect(screen.getByTestId("form-nickname")).toBeInTheDocument();
   expect(screen.getByTestId("form-playerMark")).toBeInTheDocument();
   expect(screen.getByTestId("form-boardSize")).toBeInTheDocument();
@@ -123,6 +124,7 @@ describe("SettingsPage handles context values correctly", () => {
 
     expect(darkModeToggle).toHaveProperty("checked", false);
   });
+
   describe("When values are edited", () => {
     beforeEach(async () => {
       await act(async () => {

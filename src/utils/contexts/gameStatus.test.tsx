@@ -1,9 +1,6 @@
-import React, {
-  forwardRef,
-  useContext,
-  useEffect,
-  useImperativeHandle,
-} from "react";
+// tests for the context's value initialisation and exposed functions
+
+import React, { useContext } from "react";
 import { act, GetByText, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { useGameStatusValues, GameStatusContext, createBoard } from "./gameStatus";

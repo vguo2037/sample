@@ -1,3 +1,6 @@
+// container grid for all cells
+// also manages final winning cell display
+
 import React, { useContext, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { GameCell } from "..";
@@ -6,17 +9,16 @@ import type { CellCoords, GameCellObject, WinType } from "../../utils/types";
 import { getWinningCells } from "../../utils/gameControl";
 
 const GamePanel = () => {
-  const { gameMode, gameOutcome, pastMoves, wins, currentPlayer } = useContext(GameStatusContext);
-  const { boardSize, playerPlayAs } = useContext(SettingsContext);
-  const cellRefs = useRef<(GameCellObject | null)[]>([]);
+  const { gameMode, gameOutcome, pastMoves, wins } = useContext(GameStatusContext);
+  const { boardSize } = useContext(SettingsContext);
   const panelStyle = gameMode === "none"
     ? { height: 0 }
     : { height: "fit-content" }
   ;
-  const winningCells = useRef<CellCoords[]>([]);
 
-  const isNpcTurn = gameMode === "NPC" && currentPlayer !== playerPlayAs;
-  const disabled = isNpcTurn || gameMode === "ended";
+  // keeps track of individual cells to coordinate winning cell display
+  const cellRefs = useRef<(GameCellObject | null)[]>([]);
+  const winningCells = useRef<CellCoords[]>([]);
 
   useEffect(() => {
     if (gameOutcome === "oWin" || gameOutcome === "xWin") {
@@ -42,20 +44,17 @@ const GamePanel = () => {
     else animateWinningCells(winningCells.current);
   }, [wins.length, winningCells, animateWinningCells, clearWinningCells]);
 
-  // const gridTemplateAreas = `${("'" + (". ".repeat(boardSize)) + "' ").repeat(boardSize)}`
-
   return (<motion.div
     className="game-grid-wrapper"
     data-testid="test-gamepanel"
-    // required prevent replays of mounting/unmounting animation on page changes
-    initial={panelStyle} animate={panelStyle}
     transition={{ type: "tween" }}
+    animate={panelStyle}
+    initial={panelStyle} // prevent replays of mounting/unmounting animation on page changes
   >
     <div className={`game-grid board-size-${boardSize}`}>
-    {/* <div className={"game-grid"} style={{ gridTemplateAreas }}> */}
       {Array.from(Array(boardSize*boardSize).keys()).map(i => {
         const [row, col] = [Math.floor(i / boardSize), i % boardSize];
-        return <GameCell disabled={disabled} key={`cell-${row}-${col}`}
+        return <GameCell key={`cell-${row}-${col}`}
           row={row} col={col} id={`cell-${row}-${col}`} ref={obj => cellRefs.current[i] = obj} 
         />
       })}

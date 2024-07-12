@@ -7,6 +7,7 @@ import { requestRandomNicknames } from "../../utils/nicknameAPI";
 jest.mock("../../utils/nicknameAPI", () => ({
   requestRandomNicknames: jest.fn()
 }));
+
 beforeEach(() => {
   (requestRandomNicknames as jest.Mock).mockResolvedValue(["MockNickname"])
 });

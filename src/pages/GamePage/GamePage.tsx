@@ -1,3 +1,6 @@
+// page for playing the actual game
+// also handles NPC movement logic
+
 import React, { useContext, useEffect } from "react";
 import "../../styles/gamePanel.scss";
 import { useNavigate } from "react-router-dom";
@@ -27,8 +30,9 @@ const GamePage = () => {
     const npcPlayAs = reverseMark(playerPlayAs);
 
     const makeNpcTurn = async () => {
+      // increase npc turn duration for realistic playing experience
       const delayTime = Math.random() * 1000 + 500;
-      await new Promise(res => setTimeout(res, delayTime)); // delay for realism
+      await new Promise(res => setTimeout(res, delayTime));
 
       makeNpcMove(gameStatusContext, npcPlayAs);
     };

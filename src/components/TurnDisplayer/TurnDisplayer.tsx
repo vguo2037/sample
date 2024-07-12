@@ -1,3 +1,5 @@
+// turn/win status displayed above gamePanel
+
 import React, { useContext } from "react";
 import { GameStatusContext, SettingsContext } from "../../utils";
 import { reverseMark, winningOutcome } from "../../utils/gameControl";

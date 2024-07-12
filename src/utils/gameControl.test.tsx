@@ -8,6 +8,7 @@ import * as gameControl from "./gameControl";
 const { checkMoveOutcome, getWinningCells, makeNpcMove, startGame, npcStrategyRandom, npcStrategyTactical } = gameControl;
 
 // noop, reverseMark, winningOutcome are not tested as their codes are trivial
+// checkCellWinnable is not tested as it is not exposed. its functionality is tested alongside npcStrategyTactical
 
 test("startGame should change game settings correctly", () => {
   const DEFAULT_SIZE = 3;

@@ -1,3 +1,5 @@
+// settings page for changing board size, nickname, darkmode & player turn (X/O)
+
 import React, { useContext, ChangeEventHandler, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameStatusContext, SettingsContext } from "../../utils";
@@ -28,8 +30,12 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
     setNickname(newNickname);
     setDarkMode(newDarkMode);
     setPlayerPlayAs(newPlayerPlayAs);
-    resetHistory(newBoardSize);
-    setBoardSize(newBoardSize);
+
+    if (boardSize !== newBoardSize){
+      resetHistory(newBoardSize);
+      setBoardSize(newBoardSize);
+    }
+
     navigate(-1);
   };
   const handleCancel = () => navigate(-1);
@@ -48,6 +54,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ setGlobalStyleOverride }) =
     setNewBoardSize(newBoardSize);
   };
 
+  // alter style from GlobalStyleWrapper to help user preview/trial darkMode
   useEffect(() => {
     setGlobalStyleOverride({ darkMode: newDarkMode });
     return () => setGlobalStyleOverride(undefined);

@@ -1,9 +1,11 @@
 const ENDPOINT = "https://api.fungenerators.com/name/generate?category=alien&limit=25";
 
+// shuffle a given array
 const shuffleArray = (array: Array<unknown>) => {
   array.sort(() => 0.5 - Math.random());
 };
 
+// request nicknames via the FunGenerators API
 export const requestRandomNicknames = async () => {
   try {
     const response = await fetch(ENDPOINT);

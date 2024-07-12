@@ -1,3 +1,5 @@
+// generic toggle input
+
 import React, { ChangeEventHandler } from "react";
 import "../../styles/toggle.scss";
 import { Form } from "react-bootstrap";

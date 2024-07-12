@@ -1,10 +1,14 @@
-import { Board, BoardSize, CellCoords, CellMove, CellWinnableCheckInputs, GameOutcome, GameOutcomeChecker, GameStarter, GameStatus, MoveOutcomeChecker, NpcStrategiesList, NPCStrategy, PlayerMark, WinType } from "./types";
-import * as gc from "./gameControl";
+// helper functions for calculating game statuses
 
+import { Board, BoardSize, CellCoords, CellMove, CellWinnableCheckInputs, GameOutcome, GameOutcomeChecker, GameStarter, GameStatus, MoveOutcomeChecker, NpcStrategiesList, NPCStrategy, PlayerMark, WinType } from "./types";
+import * as gc from "./gameControl"; // allow for mocking of in-module functions during module testing
+
+// dummy function used for context initialisation
 export const noop = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
 
 export const reverseMark = (mark: PlayerMark) => mark === "X" ? "O" : "X";
 
+// detects is the game is a win for a particular player
 export const winningOutcome = (playAs: PlayerMark, outcome: GameOutcome) => {
   if (playAs === "X" && outcome === "xWin") return true;
   if (playAs === "O" && outcome === "oWin") return true;
@@ -23,6 +27,7 @@ export const startGame: GameStarter = ({
   setGameMode(mode);
 };
 
+// NPC easy strategy: randomly chooses an available cell
 export const npcStrategyRandom: NPCStrategy = ({ board, npcPlayAs }) => {
   const emptyCells: number[][] = [];
 
@@ -37,44 +42,6 @@ export const npcStrategyRandom: NPCStrategy = ({ board, npcPlayAs }) => {
   const chosenCellCoords = emptyCells[chosenIndex];
 
   return { row: chosenCellCoords[0], col: chosenCellCoords[1], mark: npcPlayAs };
-};
-
-const checkCellWinnable = ({ board, row, col, playAs }: CellWinnableCheckInputs) => {
-  if (board[row][col]) return null; // cell already filled
-  const boardCopy = JSON.parse(JSON.stringify(board));
-  const opponentPlayAs = reverseMark(playAs);
-
-  boardCopy[row][col] = playAs;
-  const simulatedSelfMove = checkMoveOutcome(boardCopy, { row, col, mark: playAs });
-  if (winningOutcome(playAs, simulatedSelfMove.gameOutcome)) return playAs;
-
-  boardCopy[row][col] = opponentPlayAs;
-  const simulatedOpponentMove = checkMoveOutcome(boardCopy, { row, col, mark: opponentPlayAs });
-  if (winningOutcome(opponentPlayAs, simulatedOpponentMove.gameOutcome)) return opponentPlayAs;
-
-  return null;
-};
-
-export const getWinningCells = (wins: WinType[], lastMove: CellMove, boardSize: BoardSize) => {
-  const winningCells: CellCoords[] = [];
-  for (const w of wins) {
-    switch (w) {
-      case "rowWin":
-        for (let i=0; i<boardSize; i++) winningCells.push({ row: lastMove.row, col: i });
-        break;
-      case "colWin":
-        for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: lastMove.col });
-        break;
-      case "principDiagWin":
-        for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: i });
-        break;
-      case "secondDiagWin":
-        for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: boardSize-1-i });
-        break;
-    }
-  }
-
-  return winningCells;
 };
 
 export const npcStrategyTactical: NPCStrategy = ({ board, npcPlayAs }) => {
@@ -105,9 +72,31 @@ export const npcStrategyTactical: NPCStrategy = ({ board, npcPlayAs }) => {
   return gc.npcStrategyRandom({ board, npcPlayAs });
 };
 
+// check if making a move on a particular cell will lead to a win
+// takes a point-of-view player (playAs), prioritising returning cells winnable by playAs
+// this is used in NPC hard strategy (npcStrategyTactical)
+const checkCellWinnable = ({ board, row, col, playAs }: CellWinnableCheckInputs) => {
+  if (board[row][col]) return null; // cell already filled
+  const boardCopy = JSON.parse(JSON.stringify(board));
+  const opponentPlayAs = reverseMark(playAs);
+
+  boardCopy[row][col] = playAs;
+  const simulatedSelfMove = checkMoveOutcome(boardCopy, { row, col, mark: playAs });
+  if (winningOutcome(playAs, simulatedSelfMove.gameOutcome)) return playAs;
+
+  boardCopy[row][col] = opponentPlayAs;
+  const simulatedOpponentMove = checkMoveOutcome(boardCopy, { row, col, mark: opponentPlayAs });
+  if (winningOutcome(opponentPlayAs, simulatedOpponentMove.gameOutcome)) return opponentPlayAs;
+
+  return null;
+};
+
+// based on current difficulty/strategy, make a move as an NPC
 export const makeNpcMove = (
   { board, npcDifficulty, handleCellSelect }: GameStatus,
   npcPlayAs: PlayerMark,
+
+  // dependency injection to enable mocking of strategies
   npcStrategies: NpcStrategiesList = { 1: npcStrategyRandom, 2: npcStrategyTactical }
 ) => {
   const strategy = npcStrategies[npcDifficulty];
@@ -119,6 +108,7 @@ export const makeNpcMove = (
   handleCellSelect(strategy({ board, npcPlayAs }));
 };
 
+// check if the latest move makes any diagonal wins
 const checkDiagWin: MoveOutcomeChecker = ({ board, currentRow, currentCol, currentPlayer }) => {
   if ((currentRow + currentCol) % (board.length-1) > 0) return []; // current cell not on diagonals
 
@@ -149,6 +139,7 @@ const checkDiagWin: MoveOutcomeChecker = ({ board, currentRow, currentCol, curre
   return wins;
 };
 
+// check if the latest move makes any row wins
 const checkRowWin: MoveOutcomeChecker = ({ board, currentPlayer, currentRow }) => {
   for (let col=0; col<board[0].length; col++) {
     if (board[currentRow][col] !== currentPlayer) return [];
@@ -156,6 +147,7 @@ const checkRowWin: MoveOutcomeChecker = ({ board, currentPlayer, currentRow }) =
   return ["rowWin"];
 };
 
+// check if the latest move makes any column wins
 const checkColWin: MoveOutcomeChecker = ({ board, currentPlayer, currentCol }) => {
   for (let row=0; row<board.length; row++) {
     if (board[row][currentCol] !== currentPlayer) return [];
@@ -163,6 +155,7 @@ const checkColWin: MoveOutcomeChecker = ({ board, currentPlayer, currentCol }) =
   return ["colWin"];
 };
 
+// given a board and its last move, check if the move has made any wins
 export const checkMoveOutcome: GameOutcomeChecker = (board: Board, currentMove: CellMove) => {
   const { row: currentRow, col: currentCol, mark: currentPlayer } = currentMove;
   const currentOutcomeStartingCell = { board, currentRow, currentCol, currentPlayer };
@@ -182,4 +175,27 @@ export const checkMoveOutcome: GameOutcomeChecker = (board: Board, currentMove: 
   }
 
   return { gameOutcome: "draw", wins: [] };
+};
+
+// given a board, its last move, and its list of wins, calculate the winning cells
+export const getWinningCells = (wins: WinType[], lastMove: CellMove, boardSize: BoardSize) => {
+  const winningCells: CellCoords[] = [];
+  for (const w of wins) {
+    switch (w) {
+      case "rowWin":
+        for (let i=0; i<boardSize; i++) winningCells.push({ row: lastMove.row, col: i });
+        break;
+      case "colWin":
+        for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: lastMove.col });
+        break;
+      case "principDiagWin":
+        for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: i });
+        break;
+      case "secondDiagWin":
+        for (let i=0; i<boardSize; i++) winningCells.push({ row: i, col: boardSize-1-i });
+        break;
+    }
+  }
+
+  return winningCells;
 };

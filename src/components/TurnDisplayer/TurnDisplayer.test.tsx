@@ -39,6 +39,7 @@ describe("TurnDisplayer renders correctly", () => {
         expectedText: "It's your (O) turn!"
       });
     });
+
     test("When it is NPC's turn", () => {
       runTest({
         settingsOverride: { playerPlayAs: "O" },
@@ -47,6 +48,7 @@ describe("TurnDisplayer renders correctly", () => {
       });
     });
   });
+
   describe("For a multiplayer round", () => {
     test("When it is player X's turn", () => {
       runTest({
@@ -54,6 +56,7 @@ describe("TurnDisplayer renders correctly", () => {
         expectedText: "It is Player X's turn!"
       });
     });
+
     test("When it is player O's turn", () => {
       runTest({
         gameStatusOverride: { gameMode: "multiplayer", currentPlayer: "O" },
@@ -61,6 +64,7 @@ describe("TurnDisplayer renders correctly", () => {
       });
     });
   });
+
   describe("When game has ended", () => {
     test("(When player has won game)", () => {
       runTest({
@@ -69,6 +73,7 @@ describe("TurnDisplayer renders correctly", () => {
         expectedText: "MockNickname wins!"
       });
     });
+
     test("(When player has lost game)", () => {
       runTest({
         settingsOverride: { playerPlayAs: "O", nickname: "MockNickname" },
@@ -76,6 +81,7 @@ describe("TurnDisplayer renders correctly", () => {
         expectedText: "MockNickname loses!"
       });
     });
+
     test("(When game has ended in a draw)", () => {
       runTest({
         gameStatusOverride: { gameMode: "ended", gameOutcome: "draw" },

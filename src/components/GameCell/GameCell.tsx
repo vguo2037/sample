@@ -1,3 +1,5 @@
+// display of one cell in the game grid
+
 import React, { forwardRef, useContext, useImperativeHandle, useState } from "react";
 import type { GameCellObject, PlayerMark } from "../../utils/types";
 import { GameStatusContext, SettingsContext } from "../../utils";
@@ -10,21 +12,27 @@ interface GameCellProps {
   row: number;
   col: number;
   id: string;
-  disabled: boolean;
 }
 
-const GameCell = forwardRef<GameCellObject, GameCellProps>(({ row, col, id, disabled }, ref) => {
+const GameCell = forwardRef<GameCellObject, GameCellProps>(({ row, col, id }, ref) => {
   const {
     currentPlayer, gameMode, handleCellSelect, board
   } = useContext(GameStatusContext);
   const cellMark = board[row][col];
 
-  const { darkMode } = useContext(SettingsContext);
+  const { darkMode, playerPlayAs } = useContext(SettingsContext);
   const bgColor = darkMode ? "bg-dark" : "bg-light";
   const textColor = darkMode ? "text-light" : "text-dark";
 
-  const [isWinningCell, setIsWinningCell] = useState(false);
+  const [isWinningCell, setIsWinningCell] = useState(false); // differing display for cells that caused game win/lose
 
+  // conditions for cell being disabled
+  const isNpcTurn = gameMode === "NPC" && currentPlayer !== playerPlayAs;
+  const isFilled = Boolean(cellMark);
+  const gameEnded = gameMode === "ended";
+  const disabled = isNpcTurn || isFilled || gameEnded;
+
+  // exposing this function to gamePanel for centralised winning cell display coordination
   useImperativeHandle(ref, () => ({ setIsWinningCell }));
 
   const handleSelect = () => {
@@ -56,7 +64,7 @@ const GameCell = forwardRef<GameCellObject, GameCellProps>(({ row, col, id, disa
     <button
       id={id} data-testid={isWinningCell ? "winning-cell" : ""}
       className={`game-cell center-children ${bgColor} ${textColor}`}
-      onClick={handleSelect} disabled={disabled || Boolean(cellMark) || gameMode === "ended"}
+      onClick={handleSelect} disabled={disabled}
     >
       {displayCellMark(cellMark)}
     </button>

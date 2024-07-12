@@ -1,3 +1,5 @@
+// landing page with navigation to settings & game pages
+
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameStatusContext, SettingsContext } from "../../utils";

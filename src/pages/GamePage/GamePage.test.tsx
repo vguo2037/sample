@@ -130,6 +130,7 @@ describe("GamePage manages score changing functions correctly", () => {
     expect(mockAddScore).toHaveBeenCalledTimes(0);
     expect(mockResetScore).toHaveBeenCalledTimes(1);
   });
+
   test("for adding score after winning", () => {
     act(() => {
       render(<TestRender
@@ -139,6 +140,7 @@ describe("GamePage manages score changing functions correctly", () => {
     expect(mockAddScore).toHaveBeenCalledTimes(1);
     expect(mockResetScore).toHaveBeenCalledTimes(0);
   });
+
   test("for not changing score after losing", () => {
     act(() => {
       render(<TestRender
@@ -148,6 +150,7 @@ describe("GamePage manages score changing functions correctly", () => {
     expect(mockAddScore).toHaveBeenCalledTimes(0);
     expect(mockResetScore).toHaveBeenCalledTimes(0);
   });
+
   test("for not changing score after draw", () => {
     act(() => {
       render(<TestRender

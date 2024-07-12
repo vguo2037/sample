@@ -1,3 +1,5 @@
+// nickname input with randomise button
+
 import React, { ChangeEventHandler, useRef, useState } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { IoDiceSharp } from "react-icons/io5";

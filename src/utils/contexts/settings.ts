@@ -1,3 +1,5 @@
+// context for the current app settings
+
 import { createContext, useState } from "react";
 import type { BoardSize, PlayerMark, Settings, SettingsValues } from "../types";
 import { noop } from "../gameControl";
