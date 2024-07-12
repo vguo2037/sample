@@ -1,4 +1,4 @@
-import { Board, BoardSize, CellCoords, CellMove, CellWinnableCheckInputs, GameOutcome, GameOutcomeChecker, GameStarter, GameStatus, MoveOutcomeChecker, NpcStrategies, NPCStrategyInput, PlayerMark, WinType } from "./types";
+import { Board, BoardSize, CellCoords, CellMove, CellWinnableCheckInputs, GameOutcome, GameOutcomeChecker, GameStarter, GameStatus, MoveOutcomeChecker, NpcStrategiesList, NPCStrategy, PlayerMark, WinType } from "./types";
 import * as gc from "./gameControl";
 
 export const noop = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
@@ -23,7 +23,7 @@ export const startGame: GameStarter = ({
   setGameMode(mode);
 };
 
-export const npcStrategyRandom = ({ board }: NPCStrategyInput) => {
+export const npcStrategyRandom: NPCStrategy = ({ board, npcPlayAs }) => {
   const emptyCells: number[][] = [];
 
   for (let i=0; i<board.length; i++) for (let j=0; j<board[0].length; j++) {
@@ -34,8 +34,9 @@ export const npcStrategyRandom = ({ board }: NPCStrategyInput) => {
     throw new Error("Error in computation. No valid moves can be made.");
   }
   const chosenIndex = Math.floor(Math.random() * emptyCells.length);
+  const chosenCellCoords = emptyCells[chosenIndex];
 
-  return emptyCells[chosenIndex];
+  return { row: chosenCellCoords[0], col: chosenCellCoords[1], mark: npcPlayAs };
 };
 
 const checkCellWinnable = ({ board, row, col, playAs }: CellWinnableCheckInputs) => {
@@ -76,23 +77,29 @@ export const getWinningCells = (wins: WinType[], lastMove: CellMove, boardSize: 
   return winningCells;
 };
 
-export const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
-  let winnableOpponent = null;
+export const npcStrategyTactical: NPCStrategy = ({ board, npcPlayAs }) => {
   const boardSize = board.length;
+  let winnableOpponent: number[] | null = null, chosenCellCoords: number[] | null = null;
 
   // check winnable cells
   for (let row=0; row<board.length; row++) for (let col=0; col<board[0].length; col++) {
     const winnable: PlayerMark | null = checkCellWinnable({ board, row, col, playAs: npcPlayAs });
-    if (winnable === npcPlayAs) return [row, col]; // win game
+    if (winnable === npcPlayAs) {
+      chosenCellCoords = [row, col]; // win game
+      break;
+    }
     if (winnable === reverseMark(npcPlayAs)) winnableOpponent = [row, col];
   }
 
-  // if opponent about to win, stop them
-  if (winnableOpponent) return winnableOpponent;
+  // if cell not chosen and if opponent about to win, stop them
+  if (!chosenCellCoords && winnableOpponent) chosenCellCoords = winnableOpponent;
 
-  // pick center
+  // if cell not chosen, try to pick center
   const center = Math.floor(boardSize / 2);
-  if (!board[center][center]) return [center, center];
+  if (!chosenCellCoords && !board[center][center]) chosenCellCoords = [center, center];
+
+  // return value
+  if (chosenCellCoords) return { row: chosenCellCoords[0], col: chosenCellCoords[1], mark: npcPlayAs };
 
   // pick any cell
   return gc.npcStrategyRandom({ board, npcPlayAs });
@@ -101,7 +108,7 @@ export const npcStrategyTactical = ({ board, npcPlayAs }: NPCStrategyInput) => {
 export const makeNpcMove = (
   { board, npcDifficulty, handleCellSelect }: GameStatus,
   npcPlayAs: PlayerMark,
-  npcStrategies: NpcStrategies = { 1: npcStrategyRandom, 2: npcStrategyTactical }
+  npcStrategies: NpcStrategiesList = { 1: npcStrategyRandom, 2: npcStrategyTactical }
 ) => {
   const strategy = npcStrategies[npcDifficulty];
 
@@ -109,8 +116,7 @@ export const makeNpcMove = (
     throw new Error("Invalid npcDifficulty entered.");
   }
 
-  const chosenCell = strategy({ board, npcPlayAs });
-  handleCellSelect({ row: chosenCell[0], col: chosenCell[1], mark: npcPlayAs });
+  handleCellSelect(strategy({ board, npcPlayAs }));
 };
 
 const checkDiagWin: MoveOutcomeChecker = ({ board, currentRow, currentCol, currentPlayer }) => {

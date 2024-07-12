@@ -83,10 +83,10 @@ export type GameOutcomeChecker = (
   wins: WinType[];
 };
 
-export type NPCStrategyInput = {
+export type NPCStrategy = (input: {
   board: Board,
   npcPlayAs: PlayerMark
-};
+}) => CellMove;
 
 export type CellWinnableCheckInputs = {
   board: Board,
@@ -99,6 +99,6 @@ export type GameCellObject = {
   setIsWinningCell: React.Dispatch<React.SetStateAction<boolean>>
 };
 
-export type NpcStrategies = Partial<{
-  [difficulty in NPCDifficulty]: (input: NPCStrategyInput) => number[];
+export type NpcStrategiesList = Partial<{
+  [difficulty in NPCDifficulty]: NPCStrategy
 }>;

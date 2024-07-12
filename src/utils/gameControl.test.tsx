@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "@testing-library/jest-dom";
 import { act, render } from "@testing-library/react";
 import { createBoard, GameStatusContext, useGameStatusValues } from "./contexts/gameStatus";
-import type { Board, CellMove, GameStatus, GameStatusValues, NpcStrategies, WinType } from "./types";
+import type { Board, CellMove, GameStatus, GameStatusValues, NpcStrategiesList, WinType } from "./types";
 
 import * as gameControl from "./gameControl";
 const { checkMoveOutcome, getWinningCells, makeNpcMove, startGame, npcStrategyRandom, npcStrategyTactical } = gameControl;
@@ -148,7 +148,7 @@ describe("makeNpcMove should call the correct npc strategy and make the calculat
   
   test("for a difficulty with existing strategy", () => {
     const mockStrategies = { 9: jest.fn() };
-    mockStrategies[9].mockReturnValue([0, 0]);
+    mockStrategies[9].mockReturnValue({ row: 0, col: 0, mark: "X" });
 
     const handleCellSelect = jest.fn();
     const boardCopy = JSON.parse(JSON.stringify(board));
@@ -157,7 +157,7 @@ describe("makeNpcMove should call the correct npc strategy and make the calculat
     makeNpcMove(
       { board: boardCopy, npcDifficulty: 9, handleCellSelect } as unknown as GameStatus,
       "X",
-      mockStrategies as NpcStrategies
+      mockStrategies as NpcStrategiesList
     );
     expect(mockStrategies[9]).toHaveBeenCalledTimes(1);
 
@@ -172,7 +172,7 @@ describe("makeNpcMove should call the correct npc strategy and make the calculat
       makeNpcMove(
         { board: boardCopy, npcDifficulty: 2, handleCellSelect } as unknown as GameStatus,
         "X",
-        mockStrategies as NpcStrategies
+        mockStrategies as NpcStrategiesList
       );
     }).toThrow("Invalid npcDifficulty entered.");
   });
@@ -186,17 +186,18 @@ test("npcStrategyRandom should only make valid moves", () => {
     const boardCopy = JSON.parse(JSON.stringify(board)); 
     boardCopy[i][j] = null;
 
-    const expectedSelectedCell = expect.arrayContaining([i, j]);
+    const expectedCellMove = expect.objectContaining({ row: i, col: j, mark: "X" });
 
     const selectedCell = npcStrategyRandom({ board: boardCopy, npcPlayAs: "X" });
-    expect(selectedCell).toMatchObject(expectedSelectedCell);
+    expect(selectedCell).toMatchObject(expectedCellMove);
   }
 });
 
 describe("npcStrategyTactical", () => {
-  const checkCorrectExpectedMove = (board: Board, expectedSelectedCell: number[]) => {
+  const checkCorrectExpectedMove = (board: Board, expectCellCoords: number[]) => {
     const selectedCell = npcStrategyTactical({ board, npcPlayAs: "X" });
-    expect(selectedCell).toMatchObject(expect.arrayContaining(expectedSelectedCell));
+    const expectedCellMove = { row: expectCellCoords[0], col: expectCellCoords[1], mark: "X" };
+    expect(selectedCell).toMatchObject(expect.objectContaining(expectedCellMove));
   };
 
   test("should play to make self win via row", () => {
